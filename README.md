@@ -3,4 +3,4 @@ A sample microservice implementation with spring and netflix spring cloud compon
 
 
 # Warning
-This repo is not fully funcional
+This repo is not fully functional
