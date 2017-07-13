@@ -1,0 +1,33 @@
+server:
+   port: ${PORT:8888}
+   
+zuul:
+  #Service will be mapped under the /api URI
+  prefix: /api
+#  Uncomment to disable auto-registering all services read from Eureka
+#  ignoredServices: '*'
+  routes:
+    user:
+      path: /user/**
+      url: http://localhost:8080
+      stripPrefix: false
+     # serviceId: userservice
+    todolist:
+      path: /todolist/**
+      url: http://localhost:8090
+      stripPrefix: false
+    todolistitem:
+      url: http://localhost:8090
+      path: /todolistitem/**
+      stripPrefix: false
+    # serviceId: todolistservice
+  ignored-headers: Access-Control-Allow-Origin  
+
+ribbon: 
+  ConnectTimeout: 30000
+  ReadTimeout: 990000
+  maxAutoRetries: 1
+  MaxAutoRetriesNextServer: 2
+  eureka:
+    enabled: false
+    
