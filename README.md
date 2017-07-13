@@ -1,6 +1,4 @@
 # spring-microservice
-A sample microservice implementation with spring and netflix spring cloud components
+A sample microservice implementation with spring and netflix spring cloud components.
 
-
-# Warning
-This repo is not fully functional
+See doc.txt file for setup and running the project.

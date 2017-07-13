@@ -1,0 +1,69 @@
+Dependencies
+
+1. Java 8
+
+2. Maven:
+    This is a maven project. So install and configure maven to build the packages.
+
+    Maven installer: both linux and windows installer can be found in this link http://www-eu.apache.org/dist/maven/maven-3/3.5.0/binaries/.
+    
+	Installation and Configuration:  
+      Windows: https://www.mkyong.com/maven/how-to-install-maven-in-windows/
+	  http://www.baeldung.com/install-maven-on-windows-linux-mac
+  
+  
+    Once mvn is configured then run following command from root directory of all the packages(i.e registry, apigateway, todolist, user) which will download necessary dependencies.
+	
+	mvn clean install.
+	
+	
+  
+3. Postgresql: 
+    "user" and "todolist" services are dependent on postgresql. install postgresql and create two databases "userdb" and "todolistdb"
+	 
+	Make sure following properties is set to true in application.properties file
+	 
+	spring.jpa.hibernate.ddl-auto=create
+
+	When you run the services it will create the required tables.
+
+	Once the tables are created you can change the property value to "update" so it does not throw away old tables.
+	
+	
+	Configure the following properties in applicatio.properties file accoring to postgres setup
+	
+	spring.datasource.username=DATABASEUSER(default postgres)
+    spring.datasource.password=PASSWORD
+   
+    
+	Installer: https://www.postgresql.org/download/ 
+   
+  
+	
+4. Memcached:
+    "todolist" service is dependent on memcached. So make sure memcached is running before starting todolistservice.
+ 
+    Unix installer : http://www.memcached.org/downloads
+    Windows : http://downloads.northscale.com/memcached-1.4.5-x86.zip (32 bit)   
+              http://downloads.northscale.com/memcached-1.4.5-x86.zip (64 bit)
+
+
+    For windows run memcached.exe  to start the memcached.
+
+
+
+Running the service:
+  You have to first start the registry service. Then you have to run other services.
+  
+  Example usage:
+  
+    From postman or similar http client you can send http request to test the services.
+	
+	
+	get http://localhost:8888/api/user  (gets all the user)
+	
+    get http://localhost:8888/api/todolist?userid=1 (get todolists for the user with id 1)
+	
+	delete http://localhost:8888/api/todolist/1 (delete todolist with id 1)
+	
+    
