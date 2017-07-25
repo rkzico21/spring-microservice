@@ -9,6 +9,8 @@ import userservice.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,12 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
     
 	@Autowired
 	UserRepository repository;
 	
-   @RequestMapping("/user")
+   @RequestMapping(method = RequestMethod.GET)
    public Resources<UserResource> index() {
     
     	Iterable<User> users = repository.findAll();
@@ -38,7 +41,7 @@ public class UserController {
     }
     
     
-    @RequestMapping("/user/{id}")
+    @RequestMapping("/{id}")
     public UserResource getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
     	User user = repository.findOne(id);
     	
@@ -50,11 +53,13 @@ public class UserController {
     	return new UserResource(user);
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/user")
+    @RequestMapping(method = RequestMethod.POST)
     public UserResource registerUser(@RequestBody User entity) {
     	User user = repository.save(entity);
     	return new UserResource(user);
     }
+    
+    
 }
 
 class UserResource extends ResourceSupport {

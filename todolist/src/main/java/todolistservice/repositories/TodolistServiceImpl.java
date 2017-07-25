@@ -19,7 +19,7 @@ public class TodolistServiceImpl implements TodolistService{
     private TodoListRepository repository;
    
 	@Override
-    @Cacheable(cacheNames = "usertodolistcache", key="#userId")
+    //@Cacheable(cacheNames = "usertodolistcache", key="#userId")
     public Iterable<TodoList> findByUserId(Long userId) {
     	 Iterable<TodoList> todolists = repository.findByUserId(userId);
     	 
@@ -27,20 +27,20 @@ public class TodolistServiceImpl implements TodolistService{
     }
 
 	@Override
-	@CacheEvict(cacheNames = "usertodolistcache", key="#entity.UserId")
+	//@CacheEvict(cacheNames = "usertodolistcache", key="#entity.UserId")
 	public TodoList add(TodoList entity) {
 		TodoList todoList = repository.save(entity);
 		return todoList;
 	}
 
 	@Override
-	@Cacheable(cacheNames = "usertodolistcache", key="T(todolistservice.entities.TodoList).hash(#id.toString())") //TODO: check if it is possible to use same cache
+	//@Cacheable(cacheNames = "usertodolistcache", key="T(todolistservice.entities.TodoList).hash(#id.toString())") //TODO: check if it is possible to use same cache
     public TodoList findOne(Long id) {
 		return repository.findOne(id);
 	}
 
 	@Override
-	@CacheEvict(cacheNames = "usertodolistcache", allEntries=true)
+	//@CacheEvict(cacheNames = "usertodolistcache", allEntries=true)
 	public void delete(Long id) {
 
 		repository.delete(id);

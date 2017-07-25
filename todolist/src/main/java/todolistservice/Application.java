@@ -37,11 +37,11 @@ import com.google.code.ssm.spring.SSMCacheManager;
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"todolistservice.entities"})
 @EnableJpaRepositories(basePackages = { "todolistservice.repositories" })
-@ComponentScan(basePackages = {"todolistservice.entities", "todolistservice.repositories", "todolistservice.controllers"})
+@ComponentScan(basePackages = {"todolistservice.entities", "todolistservice.repositories", "todolistservice.controllers", "todolistservice.config", ""})
 @EnableFeignClients
-@EnableCaching
+//@EnableCaching
 @EnableAspectJAutoProxy
-@ImportResource("classpath:simplesm-context.xml")
+//@ImportResource("classpath:simplesm-context.xml")
 public class Application extends CachingConfigurerSupport {
 	
 	private static final String LOCALHOST = "127.0.0.1:11211";
@@ -73,6 +73,7 @@ public class Application extends CachingConfigurerSupport {
         };
     }
     
+    /*
     @Bean
     @Override
     public CacheManager cacheManager() {
@@ -139,9 +140,6 @@ public class Application extends CachingConfigurerSupport {
    
         
         String server = LOCALHOST;
- //       if (server != null && !server.isEmpty()) {
-   //         server = environment.getProperty("memcached.servers");
-     //   }
 
         XMemcachedConfiguration cacheConfiguration = createCacheConfiguration(server);
         cacheFactory.setAddressProvider(new DefaultAddressProvider(server));
@@ -156,5 +154,5 @@ public class Application extends CachingConfigurerSupport {
         cacheConfiguration.setConsistentHashing(true);
         cacheConfiguration.setUseBinaryProtocol(true);
         return cacheConfiguration;
-    }
+    }*/
 }

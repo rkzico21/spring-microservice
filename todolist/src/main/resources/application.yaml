@@ -1,0 +1,54 @@
+server:
+   port: 8090
+
+spring:
+   jpa:
+     database: POSTGRESQL
+     show-sql: true 
+     hibernate:
+        ddl-auto: update
+        naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
+#postgres config
+   datasource:
+     platform: postgres 
+     url: jdbc:postgresql://127.0.0.1:5432/todolistdb
+     username: postgres
+     password: admin
+     driverClassName: org.postgresql.Driver
+
+eureka:
+    client:
+       serviceUrl:
+          defaultZone: http://localhost:8761/eureka/
+
+
+
+# H2 Datasource
+#spring.datasource.url=jdbc:h2:mem:testdb;DB_CLOSE_ON_EXIT=FALSE
+#spring.datasource.username=sa
+#spring.datasource.password=
+#spring.datasource.driver-class-name=org.h2.Driver
+
+
+memcached:
+   servers: 127.0.0.1:11211
+
+
+#endpoints:
+#   allowed-origins: *
+#   allowed-methods: GET,POST,DELETE
+#   allow-credentials: true
+#   allowed-methods: *
+#   allowed-headers: *
+
+
+security:
+  user:
+    password: none
+  oauth2:
+    resource:
+      jwt:
+        keyValue: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAimUKhvBhsoeSM3HkIOP/Y3RXjvonBlZnLj8oO92TyAKG53lmAoK0wZ5MTZPsfrOz2Z7CeAp6mPhUANX2RUoFwVzG7rJmgWyqGmGFNBmtYL+uVqQ80TzWi5zyzXTxgVMWiCqqw/u4AeE1qhN8chnGwhUBnpgPAPd8v57mIwg0n5JxjdYe7pgHlpvt8ZXTXd1KBxB5K7WjNlCfMf75ZEeBaplxsSfJUwKbnHQKWcY3NnpjkVR8y4jviAbkOHmGMaliM7fcsLzbosBUPDQuNlvYdjPBRfH6MMPeXRW6On3u0Um9wIYmkQS+AEgHCq4UuLOnTTqqxnGkwFYeMAAXmRyMtQIDAQAB
+          -----END PUBLIC KEY-----

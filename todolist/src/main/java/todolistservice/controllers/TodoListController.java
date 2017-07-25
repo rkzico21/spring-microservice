@@ -1,10 +1,14 @@
 package todolistservice.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.code.ssm.api.ReadThroughSingleCache;
 
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +37,13 @@ import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,6 +61,9 @@ public class TodoListController {
 	@Autowired
     TodolistService service;
 	
+	 @Autowired
+	 TokenStore tokenStore;
+
 	
 	@Autowired
     private UserServiceClient userServiceClient;
@@ -110,14 +124,33 @@ public class TodoListController {
     	logger.info(String.format("Verifying user with user id: %d", userId)); 
     	if(userId == 0) return;
     	try {
+    		;
     		
-    	    User user = userServiceClient.getUser(userId);
+    	    User user = userServiceClient.getUser(getAuthorizationToken(), userId);
     	} catch (Exception ex)
     	{
     		logger.error(ex.getMessage());
     		throw new UserNotFoundException(userId);
     	}
     }
+    
+    private String getAuthorizationToken() {
+    	
+    	String token = "";
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (authentication!= null && authentication.isAuthenticated() && requestAttributes instanceof ServletRequestAttributes) {
+                javax.servlet.http.HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+                token =  request.getHeader("Authorization");
+        }
+        
+        System.out.println(token);
+        
+        return token;
+    }
+    
 }
 
 class TodoListResource extends ResourceSupport {

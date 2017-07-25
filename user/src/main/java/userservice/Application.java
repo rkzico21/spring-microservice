@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"userservice.entities"})
 @EnableJpaRepositories(basePackages = { "userservice.repositories" })
-@ComponentScan(basePackages = {"userservice.entities", "userservice.repositories", "userservice.controllers"})
+@ComponentScan(basePackages = {"userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config"})
 public class Application {
     
 	

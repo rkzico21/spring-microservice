@@ -1,0 +1,14 @@
+server:
+  port: 9991
+  #contextPath: /auth
+
+app:
+  name: authserver
+  user_cookie: c_user
+
+jwt:
+  header: Authorization
+  expires_in: 600 # 10 minutes
+  secret: queenvictoria
+  cookie: AUTH-TOKEN
+
