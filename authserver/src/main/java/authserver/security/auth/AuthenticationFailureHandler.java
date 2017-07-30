@@ -17,8 +17,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
-    	System.out.println("############Failed to authenticate######################");
-        
+    	
     	super.onAuthenticationFailure(request, response, exception);
         
         exception.printStackTrace();

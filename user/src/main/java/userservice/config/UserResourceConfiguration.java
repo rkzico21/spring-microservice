@@ -19,6 +19,7 @@ public class UserResourceConfiguration extends ResourceServerConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 			http.csrf().disable()
                     .authorizeRequests()
+                    .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .antMatchers("/**").authenticated();
                    // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
         

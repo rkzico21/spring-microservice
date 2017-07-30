@@ -63,7 +63,7 @@ public class Application extends CachingConfigurerSupport {
 				);
 	}
     
-    @Bean
+    /*@Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
@@ -71,7 +71,7 @@ public class Application extends CachingConfigurerSupport {
                 registry.addMapping("/**").allowedOrigins("*").allowCredentials(true).allowedMethods("*").allowedHeaders("*");
             }
         };
-    }
+    }*/
     
     /*
     @Bean

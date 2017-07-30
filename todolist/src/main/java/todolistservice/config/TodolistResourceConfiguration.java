@@ -1,6 +1,9 @@
 package todolistservice.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +12,9 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
@@ -17,14 +23,29 @@ public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapt
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-			http.csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/**").authenticated();
+			http
+			.cors().and()
+			.csrf().disable()
+            .authorizeRequests()
+            .antMatchers("/**").authenticated();
                    // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
         
 	
 	}
 	
+	
+	 @Bean
+     CorsConfigurationSource corsConfigurationSource() {
+			CorsConfiguration configuration = new CorsConfiguration();
+			configuration.addAllowedOrigin("*");
+			configuration.setAllowCredentials(true);
+			configuration.addAllowedMethod("*");
+			configuration.addAllowedHeader("*");
+			
+			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+			source.registerCorsConfiguration("/**", configuration);
+			return source;
+		}
 
 
     @Autowired

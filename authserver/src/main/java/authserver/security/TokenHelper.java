@@ -104,7 +104,7 @@ public class TokenHelper {
     }
 
     private long getCurrentTimeMillis() {
-        return DateTime.now().getMillis();
+        return  DateTime.now().getMillis();
     }
 
     private Date generateCurrentDate() {

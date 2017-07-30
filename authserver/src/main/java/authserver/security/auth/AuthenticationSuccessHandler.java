@@ -86,15 +86,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				
-		
-		// String jws = tokenHelper.generateToken(authentication.getName());
-       // System.out.println(jws); 
-	  //	response.addHeader(HEADER_STRING, TOKEN_PREFIX + " " + jws);
-	
-		
-		// JWT is also in the response
-		
 	}
 	
 	private OAuth2AccessToken generateOauth2AccessToken(String user, String password) throws Exception {

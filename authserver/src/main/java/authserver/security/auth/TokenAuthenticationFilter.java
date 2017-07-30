@@ -76,8 +76,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             }
         } else {
             
-        	System.out.println("############No  authentication token found#####################");
-        	//SecurityContextHolder.getContext().setAuthentication(new AnonAuthentication());
+         //SecurityContextHolder.getContext().setAuthentication(new AnonAuthentication());
         }
 
         chain.doFilter(request, response);

@@ -1,6 +1,8 @@
 package authserver.config;
 
 
+import java.util.Arrays;
+
 import javax.servlet.Filter;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,11 +31,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 //import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import authserver.Service.JwtUserDetailService;
 import authserver.security.auth.AuthenticationFailureHandler;
 import authserver.security.auth.AuthenticationSuccessHandler;
-import authserver.security.auth.JsonAuthenticationFilter;
 import authserver.security.auth.RestAuthenticationEntryPoint;
 import authserver.security.auth.TokenAuthenticationFilter;
 
@@ -49,11 +53,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new TokenAuthenticationFilter();
     }
 
-    @Bean
-    public JsonAuthenticationFilter JsonLoginAuthenticationFilter() throws Exception {
-		return new JsonAuthenticationFilter("/auth/login",authenticationManager());
-	}
-    
     @Autowired
     private JwtUserDetailService jwtUserDetailsService;
 
@@ -85,8 +84,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
     	
              http
+                .cors().and()
                 .csrf().disable() 
                . authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login").permitAll().and()
                 .authorizeRequests()
@@ -99,13 +100,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS ).and()
                 .exceptionHandling()
                 .authenticationEntryPoint( restAuthenticationEntryPoint ).and()
-                //.addFilterBefore(JsonLoginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-                //.addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
                 .deleteCookies(TOKEN_COOKIE);
 
     }
+    
+    
+    @Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.addAllowedOrigin("*");
+		configuration.setAllowCredentials(true);
+		configuration.setAllowedMethods(Arrays.asList("GET","POST", "OPTIONS"," HEAD"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
 }
 
 
