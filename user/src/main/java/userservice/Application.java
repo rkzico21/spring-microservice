@@ -27,7 +27,7 @@ public class Application {
         ApplicationContext context = SpringApplication.run(Application.class, args);
      }
     
-    @Bean
+    /*@Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurerAdapter() {
             @Override
@@ -35,6 +35,6 @@ public class Application {
                 registry.addMapping("/**").allowedOrigins("*").allowCredentials(true).allowedMethods("*").allowedHeaders("*");
             }
         };
-    }
+    }*/
 
 }
