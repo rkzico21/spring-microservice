@@ -41,6 +41,11 @@ public class User{
     public String getEmail() {
         return email;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("Id:%d , Name:%s, Email:%s", this.Id, this.name, this.email);
+    }
 }
 
 

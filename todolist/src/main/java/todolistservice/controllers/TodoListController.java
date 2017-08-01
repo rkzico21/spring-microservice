@@ -61,8 +61,8 @@ public class TodoListController {
 	@Autowired
     TodolistService service;
 	
-	 @Autowired
-	 TokenStore tokenStore;
+	@Autowired
+	TokenStore tokenStore;
 
 	
 	@Autowired
