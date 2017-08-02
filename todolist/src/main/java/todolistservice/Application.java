@@ -37,7 +37,7 @@ import com.google.code.ssm.spring.SSMCacheManager;
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"todolistservice.entities"})
 @EnableJpaRepositories(basePackages = { "todolistservice.repositories" })
-@ComponentScan(basePackages = {"todolistservice.entities", "todolistservice.repositories", "todolistservice.controllers", "todolistservice.config", ""})
+@ComponentScan(basePackages = {"todolistservice.entities", "todolistservice.repositories", "todolistservice.controllers", "todolistservice.config", "todolistservice.exceptions"})
 @EnableFeignClients
 //@EnableCaching
 @EnableAspectJAutoProxy

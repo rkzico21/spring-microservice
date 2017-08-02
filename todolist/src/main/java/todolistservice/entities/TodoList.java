@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @Table(name = "todolist")
 public class TodoList implements Serializable {
@@ -25,10 +27,10 @@ public class TodoList implements Serializable {
 	private Long id;
 	
 	
-	@NotNull
+	@NotEmpty(message="title is missing.")
 	private String title;
 	
-	@NotNull
+	@NotEmpty(message="userid is missing.")
 	@Column(name = "userid")
 	private Long userId;
 	

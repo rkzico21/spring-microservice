@@ -4,6 +4,7 @@ spring:
      show-sql: true 
      hibernate:
         ddl-auto: update
+        naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
 #postgres config
    datasource:
      platform: postgres 

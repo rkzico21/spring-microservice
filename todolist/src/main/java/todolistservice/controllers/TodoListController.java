@@ -71,7 +71,7 @@ public class TodoListController {
 	@Autowired
     TodoListResourceProcessor resourceProcessor;
 	
-	@RequestMapping("/todolist")
+	@RequestMapping(method = RequestMethod.GET, value="/todolist")
 	public Resources<Resource<TodoList>> index(@RequestParam(value = "userid", required = false) Long userId) throws Throwable {
         
 	    VerifyUser(userId);
@@ -90,8 +90,7 @@ public class TodoListController {
 		return new Resources<>(todoListResources);
     }
     
-    
-    @RequestMapping("/todolist/{id}")
+    @RequestMapping(method = RequestMethod.GET, value="/todolist/{id}")
     public Resource<TodoList> getTodoList(@PathVariable(value="id") Long id) {
     	TodoList todoList = service.findOne(id);
     	
@@ -124,9 +123,8 @@ public class TodoListController {
     	logger.info(String.format("Verifying user with user id: %d", userId)); 
     	if(userId == 0) return;
     	try {
-    		;
     		
-    	    User user = userServiceClient.getUser(getAuthorizationToken(), userId);
+    		User user = userServiceClient.getUser(getAuthorizationToken(), userId);
     	} catch (Exception ex)
     	{
     		logger.error(ex.getMessage());
@@ -167,25 +165,3 @@ class TodoListResource extends ResourceSupport {
 }
 
 
-@Component
-class ProfilesClient {
-
-    private final DiscoveryClient discoveryClient;
-
-    @Autowired
-    public ProfilesClient(DiscoveryClient discoveryClient) {
-        this.discoveryClient = discoveryClient;
-    }
-
-    public URI getProfileUri(TodoList todoList) {
-
-        ServiceInstance instance = discoveryClient.getInstances("userservice").get(0);
-        		//(
-                //"userservice", false);
-
-        String url = instance.getUri().toString();
-
-        return UriComponentsBuilder.fromHttpUrl( url + "/user/{id}")
-                .buildAndExpand(todoList.getUserId()).toUri();
-  }
-}

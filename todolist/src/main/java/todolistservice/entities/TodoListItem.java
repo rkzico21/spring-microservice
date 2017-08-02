@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @Table(name = "todolistitem")
 public class TodoListItem{
@@ -16,11 +18,11 @@ public class TodoListItem{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 	
-	@NotNull
+	@NotEmpty(message="todolistid is missing.")
 	@Column(name = "todolistid")
 	private Long todolistId;
 	
-	@NotNull
+	@NotEmpty(message="title is missing.")
 	private String title;
 
 	TodoListItem() {}

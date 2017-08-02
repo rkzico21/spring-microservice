@@ -26,7 +26,7 @@ public class TodoListItemController {
    @Autowired
    TodoListItemRepository repository;
 	
-   @RequestMapping("/todolistitem")
+   @RequestMapping(method = RequestMethod.GET, value="/todolistitem")
    public Resources<Resource<TodoListItem>> index(@RequestParam(value = "todolistid", required = false) Long todolistid) {
     
     	Iterable<TodoListItem> todoListItems = repository.findByTodolistId(todolistid);
