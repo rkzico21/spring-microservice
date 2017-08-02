@@ -11,13 +11,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/user")
@@ -44,7 +48,7 @@ public class UserController {
     }
     
     
-    @RequestMapping("/{id}")
+    @RequestMapping(method = RequestMethod.GET, value= "/{id}")
     public UserResource getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
         logger.info(String.format("Finding user with id: %d", id));
     	
@@ -60,16 +64,15 @@ public class UserController {
     }
     
     @RequestMapping(method = RequestMethod.POST)
-    public UserResource registerUser(@RequestBody User entity) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserResource registerUser(@Valid @RequestBody User entity) {
     	
         logger.info(String.format("Adding new user. User:%s", entity));
         User user = repository.save(entity);
         logger.info(String.format("New user created. User:%s", user));
         return new UserResource(user);
     }
-    
-    
-}
+ }
 
 class UserResource extends ResourceSupport {
 

@@ -15,7 +15,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -24,7 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"userservice.entities"})
 @EnableJpaRepositories(basePackages = { "userservice.repositories" })
-@ComponentScan(basePackages = {"userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config"})
+@ComponentScan(basePackages = {"userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.exceptions"})
 public class Application {
     
 	
@@ -56,5 +58,4 @@ public class Application {
         f.setAfterMessageSuffix("]\n");
         return f;
     }
-
 }

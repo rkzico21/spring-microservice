@@ -5,7 +5,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "\"user\"")
@@ -15,10 +16,10 @@ public class User{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long Id;
 	
-	@NotNull
+	@NotEmpty(message = "name is required field")
 	private String name;
 	
-	@NotNull
+	@NotEmpty(message = "email is required field.")
 	private String email;
 
     User() {}

@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,7 +18,6 @@ import authserver.security.TokenHelper;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,7 +26,6 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
@@ -36,7 +33,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -92,13 +88,12 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		
 		
 		InMemoryClientDetailsServiceBuilder builder = new  ClientDetailsServiceBuilder<>().inMemory();
-		
 		builder.withClient("gateway")
 		.secret("secret")
 		.scopes("read", "write")
 	    .autoApprove(true)
-        .accessTokenValiditySeconds(600)
-        .refreshTokenValiditySeconds(600)
+        .accessTokenValiditySeconds(EXPIRES_IN)
+        .refreshTokenValiditySeconds(EXPIRES_IN)
         .authorizedGrantTypes("implicit", "refresh_token", "password", "authorization_code");
 	
 		ClientDetailsService clientDetailService =	builder.build();
@@ -128,8 +123,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		    User userPrincipal = new User();DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
 	        defaultTokenServices.setTokenStore(tokenStore());
 	        defaultTokenServices.setSupportRefreshToken(true);
-	        defaultTokenServices.setAccessTokenValiditySeconds(600);
-	        defaultTokenServices.setAccessTokenValiditySeconds(600);
+	        defaultTokenServices.setAccessTokenValiditySeconds(EXPIRES_IN); 
 	        defaultTokenServices.setReuseRefreshToken(true);
 	        defaultTokenServices.setClientDetailsService(clientDetailService);
 	        defaultTokenServices.setTokenEnhancer(accessTokenConverter());
@@ -143,8 +137,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		    OAuth2Authentication authenticationRequest = new OAuth2Authentication(authorizationRequest, authenticationToken);
 		    authenticationRequest.setAuthenticated(true);
 
-		    //AuthorizationServerTokenServices tokenServices = endPoints.getTokenServices();
-			OAuth2AccessToken accessToken = defaultTokenServices.createAccessToken(authenticationRequest);	
+		    OAuth2AccessToken accessToken = defaultTokenServices.createAccessToken(authenticationRequest);	
 		    return accessToken;
 	}
 	
@@ -154,7 +147,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(
                 new ClassPathResource("jwt.jks"), "mySecretKey".toCharArray());
 		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-       // converter.setSigningKey("123");
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
         return converter;
     }
@@ -169,6 +161,4 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     	ClientDetailsServiceConfigurer clientDetailsServiceConfigurer = new ClientDetailsServiceConfigurer(clientDetailsServiceBuilder);
     	return clientDetailsServiceConfigurer;
     }
-    
-    
   }
