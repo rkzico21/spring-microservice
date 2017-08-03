@@ -4,11 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.google.code.ssm.api.ReadThroughSingleCache;
-
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,35 +13,18 @@ import todolistservice.User;
 import todolistservice.UserServiceClient;
 import todolistservice.entities.*;
 import todolistservice.exceptions.TodolistNotFoundException;
-import todolistservice.exceptions.UserNotFoundException;
-import todolistservice.repositories.TodoListRepository;
 import todolistservice.repositories.TodolistService;
-
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceProcessor;
-import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -124,15 +103,22 @@ public class TodoListController {
     	if(userId == 0) return;
     	try {
     		
-    		User user = userServiceClient.getUser(getAuthorizationToken(), userId);
-    	} catch (Exception ex)
+    		ResponseEntity<User> user = userServiceClient.getUser(getAuthenticationToken(), userId);
+    		logger.info(user.getStatusCode().toString());
+    	} 
+        catch (com.netflix.hystrix.exception.HystrixRuntimeException ex)
     	{
-    		logger.error(ex.getMessage());
-    		throw new UserNotFoundException(userId);
+        	logger.error("Could not verify user with id " + userId, ex);
+      	  	Throwable cause = ex.getCause();
+    	    throw cause;
+    	}
+    	catch (Throwable ex)
+    	{
+    	   throw ex;
     	}
     }
     
-    private String getAuthorizationToken() {
+    private String getAuthenticationToken() {
     	
     	String token = "";
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
@@ -144,24 +130,9 @@ public class TodoListController {
                 token =  request.getHeader("Authorization");
         }
         
-        System.out.println(token);
-        
         return token;
     }
     
-}
-
-class TodoListResource extends ResourceSupport {
-
-	private final TodoList todoList;
-
-	public TodoListResource(TodoList todoList) {
-		this.todoList = todoList;
-	}
-
-	public TodoList getCart() {
-		return todoList;
-	}
 }
 
 
