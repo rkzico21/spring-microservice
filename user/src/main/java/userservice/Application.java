@@ -1,8 +1,11 @@
 package userservice;
 
 import javax.servlet.Filter;
-import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -26,12 +29,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"userservice.entities"})
 @EnableJpaRepositories(basePackages = { "userservice.repositories" })
-@ComponentScan(basePackages = {"userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.exceptions"})
+@ComponentScan(basePackages = {"userservice","userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.exceptions"})
 public class Application {
     
 	
     public static void main(String[] args) {
-        ApplicationContext context = SpringApplication.run(Application.class, args);
+        SpringApplication.run(Application.class, args);
      }
     
     /*@Bean
@@ -44,18 +47,16 @@ public class Application {
         };
     }*/
     
-    @Bean
-    public Filter loggingFilter(){
-    	CommonsRequestLoggingFilter  f = new CommonsRequestLoggingFilter() ;
 
-    	f.setIncludeClientInfo(true);
-        f.setIncludePayload(true);
-        f.setIncludeQueryString(true);
-        f.setIncludeHeaders(true);
-        
-        f.setBeforeMessagePrefix("BEFORE REQUEST  [");
-        f.setAfterMessagePrefix("AFTER REQUEST    [");
-        f.setAfterMessageSuffix("]\n");
-        return f;
+    @Bean
+    public MessageConverter jsonMessageConverter(){
+        return new JsonMessageConverter();
     }
-}
+    
+    @Bean
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(jsonMessageConverter());
+        return template;
+    }
+ }

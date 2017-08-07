@@ -36,10 +36,6 @@
 			<AppenderRef ref="App-Appender" />
 			<AppenderRef ref="Console-Appender" />
 		</Logger>
-		<Logger name="userservice" level="info" additivity="false">
-			<AppenderRef ref="App-Appender" />
-			<AppenderRef ref="Console-Appender" />
-		</Logger>
 		<Logger name="org.hibernate.SQL" level="debug">
 			<AppenderRef ref="App-Appender" />
 	    </Logger>

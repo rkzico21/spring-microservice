@@ -2,6 +2,7 @@ package userservice.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import userservice.MessageSenderService;
 import userservice.entities.User;
 import userservice.exceptions.UserNotFoundException;
 import userservice.repositories.UserRepository;
@@ -28,9 +29,14 @@ import javax.validation.Valid;
 public class UserController {
     
    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+   
+   private final static String routingKey = "spring-boot";
+   
    @Autowired
    UserRepository repository;
+   
+   @Autowired
+   MessageSenderService messageService;
 	
    @RequestMapping(method = RequestMethod.GET)
    public Resources<UserResource> index() {
@@ -69,6 +75,7 @@ public class UserController {
     	
         logger.info(String.format("Adding new user. User:%s", entity));
         User user = repository.save(entity);
+        messageService.SendMessage(routingKey, user);
         logger.info(String.format("New user created. User:%s", user));
         return new UserResource(user);
     }

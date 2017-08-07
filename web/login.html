@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<script src="angular.min.js"></script>
+<body ng-app="demoapp" ng-controller="sessionCtrl">
+
+<div>
+<h2>Login</h2>
+
+	<form ng-submit="signin()">
+		<input type="text" ng-model="username" size="50" placeholder="User name">
+		<input type="password" ng-model="password" size="50" placeholder="Password">
+		<input type="submit" value="Login">
+	</form>
+
+<br>
+</div>
+
+
+<script src="app.js"></script>
+<script src="session.js"></script>
+</html>
