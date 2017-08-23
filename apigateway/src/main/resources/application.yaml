@@ -2,6 +2,11 @@ app:
   name: apigateway
   user_cookie: c_user
 
+spring:
+   http:
+       multipart:
+         max-file-size: -1
+
 server:
    port: ${PORT:8888}
    
@@ -32,7 +37,23 @@ zuul:
       stripPrefix: false
       sensitiveHeaders:
     # serviceId: todolistservice
-  ignored-headers: Access-Control-Allow-Origin 
+    file:
+      url: http://localhost:8086
+      path: /file/**
+      stripPrefix: false
+      sensitiveHeaders:
+    meeting:
+      serviceId: meeting
+      path: /meeting/**
+      stripPrefix: false
+      sensitiveHeaders:
+  ignored-headers: Access-Control-Allow-Origin
+
+# based on https://gist.github.com/spencergibb/80a134b4738c78ca64e4d0c77214fcb6
+meeting:
+  ribbon:
+    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: localhost:8086
   
 #security:
 #  user:

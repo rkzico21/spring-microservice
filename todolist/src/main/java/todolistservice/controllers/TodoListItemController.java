@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import todolistservice.entities.*;
 import todolistservice.exceptions.TodolistItemNotFoundException;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
 
 @RestController
 public class TodoListItemController {
@@ -27,6 +29,7 @@ public class TodoListItemController {
    TodoListItemRepository repository;
 	
    @RequestMapping(method = RequestMethod.GET, value="/todolistitem")
+   @ResponseStatus(HttpStatus.OK)
    public Resources<Resource<TodoListItem>> index(@RequestParam(value = "todolistid", required = false) Long todolistid) {
     
     	Iterable<TodoListItem> todoListItems = repository.findByTodolistId(todolistid);

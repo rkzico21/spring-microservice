@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<script src="angular.min.js"></script>
+<body ng-app="demoapp">
+
+
+<div id="logout" ng-controller="sessionCtrl"> 
+		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
+</div>
+<div ng-controller="meetingsCtrl">
+<h2>Meeting Form</h2>
+
+<form ng-submit="createMeeting()">
+    <input type="text" ng-model="subject" size="50" placeholder="Subject">
+    <input type="text" ng-model="meetingLocation" size="50" placeholder="Location">
+	<input type ="file" file-model = "file"/>
+    <input type="submit" value="Create">
+</form>
+
+<br>
+
+<h2>Meetings</h2>
+<div >
+	<table style="width:100%">
+  <tr>
+    <td>Subject</td>
+    <td>Location</td>	
+  </tr>
+  <tr ng-repeat="meeting in meetings">
+     <td><span ng-bind="meeting.subject"></span></td>
+	 <td><span ng-bind="meeting.location"></span></td>
+	 <td><a href="#" ng-click="handleClick(meeting.url)">Details</a></td>
+ </tr>
+ </table>
+   
+</div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="session.js"></script>
+<script src="controllers/file.js"></script>
+<script src="controllers/meetings.js"></script>
+</body>
+</html>

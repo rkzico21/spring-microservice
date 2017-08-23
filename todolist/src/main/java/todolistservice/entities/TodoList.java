@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -30,7 +31,7 @@ public class TodoList implements Serializable {
 	@NotEmpty(message="title is missing.")
 	private String title;
 	
-	@NotEmpty(message="userid is missing.")
+	@Min(value=1, message="user id is missing")
 	@Column(name = "userid")
 	private Long userId;
 	

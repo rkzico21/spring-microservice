@@ -16,3 +16,5 @@ README.html
 .idea
 *.iml
 *.log
+files
+logs

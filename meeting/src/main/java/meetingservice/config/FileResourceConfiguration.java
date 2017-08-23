@@ -1,11 +1,8 @@
-package todolistservice.config;
-
-import java.util.Arrays;
+package meetingservice.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -19,19 +16,22 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableResourceServer
-public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapter {
+public class FileResourceConfiguration extends ResourceServerConfigurerAdapter {
+	
+	 @Autowired
+	 TokenStore tokenStore;
+
+	@Autowired
+	JwtAccessTokenConverter tokenConverter;
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-			 http
-			.cors().and()
-			.csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/**")
-            //.authenticated(); //remove comment to enable security
-            .permitAll();
-	            
-            // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
+			http
+			  .cors().and()
+			  .csrf().disable()
+              .authorizeRequests()
+              .antMatchers("/**").permitAll();
+              // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
         
 	
 	}
@@ -50,15 +50,8 @@ public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapt
 			return source;
 		}
 
-
-    @Autowired
-    TokenStore tokenStore;
-
-    @Autowired
-    JwtAccessTokenConverter tokenConverter;
-	
-    @Override
+     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-         resources.resourceId("todolist").tokenStore(tokenStore);;
+         resources.resourceId("api").tokenStore(tokenStore);;
     }
  }

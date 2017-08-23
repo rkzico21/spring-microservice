@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<script src="angular.min.js"></script>
+<body ng-app="demoapp">
+
+
+<div id="logout" ng-controller="sessionCtrl"> 
+		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
+</div>
+<div ng-controller="meetingCtrl">
+
+
+<form ng-submit="update(resourceUrl)">
+    <input type="text" ng-model="subject" size="50" placeholder="Subject">
+    <input type="text" ng-model="meetingLocation" size="50" placeholder="Location">
+	<input type ="file" file-model = "file"/>
+    <input type="submit" value="Update">
+</form>
+
+<br>
+
+<div ng-repeat="file in files">
+    <div><span ></span> 
+		<span><a href="#" ng-click="download(file.contentUrl)">{{file.name}}</a></span>
+	</div>
+</div>
+
+</div>
+
+<script src="app.js"></script>
+<script src="session.js"></script>
+
+<script src="controllers/file.js"></script>
+<script src="controllers/meeting.js"></script>
+</body>
+</html>

@@ -30,8 +30,11 @@ public class UserResourceConfiguration extends ResourceServerConfigurerAdapter {
 			  .cors().and()
 			  .csrf().disable()
               .authorizeRequests()
-              .antMatchers("/**").authenticated();
-              // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
+              .antMatchers("/**")
+              //.authenticated(); //requires for authentication
+              .permitAll();
+			
+			// .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
         
 	
 	}

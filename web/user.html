@@ -12,6 +12,7 @@
 
 <form ng-submit="userAdd()">
     <input type="text" ng-model="username" size="50" placeholder="User name">
+    <input type="text" ng-model="userfullname" size="50" placeholder="Full name">
     <input type="text" ng-model="useremail" size="50" placeholder="Email">
     <input type="submit" value="Add New">
 </form>
@@ -23,11 +24,13 @@
 	<table style="width:100%">
   <tr>
     <td>Name</td> 
-    <td>Email</td>
+	<td>Full name</td> 
+	<td>Email</td>
 	<td></td>
   </tr>
   <tr ng-repeat="x in userList">
      <td><span ng-bind="x.userName"></span></td>
+	 <td><span ng-bind="x.userFullName"></span></td>
 	 <td><span ng-bind="x.userEmail"></span></td>
 	 <td><a href="#" ng-click="handleClick(x.userId)">TodoList</a></td>
   </tr>
@@ -39,53 +42,7 @@
 
 <script src="app.js"></script>
 <script src="session.js"></script>
-<script>
-var app = angular.module('demoapp'); 
-app.controller('userCtrl', function($scope, $http, $sce, $window) {
-    $scope.showUser=false;
-    $scope.userList = [];
-	var url = "http://localhost:8888/api/user";
-	var trustedurl = $sce.trustAsResourceUrl(url);
-	//$scope.userid=1;
-	$http.get(url)
-    .then(function(response) {
-	  
-	   if(response.data._embedded) {
-	  
-		angular.forEach(response.data._embedded.userResources, function(item) {
-	        $scope.userList.push({userId:item.user.id, userName:item.user.name, userEmail:item.user.email});
-		
-	  });
-	  }
-    });
-	
-    $scope.userAdd = function() {
-	  var dataObj = {
-				name: $scope.username,
-				email: $scope.useremail,
-		};	
-		
-		var url = "http://localhost:8888/api/user";
-	
-		$http.post(url, dataObj)
-		.then(function(response) {
-       	    var data = response.data;
-			$scope.userList.push({userId:data.user.id, userName:data.user.name, userEmail:data.user.email});
-			
-			$scope.username = "";
-			$scope.useremail="";
-			});;
-		
-        
-    };
-	
-	$scope.handleClick = function(userId){
-	    $window.localStorage['userId'] = userId;
-		$window.location.href = '/todolist.html';
-	 };
-
-});
-</script>
+<script src="controllers/user.js"></script>
 
 </body>
 </html>

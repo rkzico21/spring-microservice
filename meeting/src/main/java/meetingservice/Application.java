@@ -1,4 +1,4 @@
-package userservice;
+package meetingservice;
 
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -13,28 +13,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+
 @SpringBootApplication
 @EnableEurekaClient
 @EnableAutoConfiguration
-@EntityScan(basePackages = {"userservice.entities"})
-@EnableJpaRepositories(basePackages = { "userservice.repositories" })
-@ComponentScan(basePackages = {"userservice","userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.exceptions"})
+@EntityScan(basePackages = {"meetingservice.entities"})
+@EnableJpaRepositories(basePackages = { "meetingservice.repositories" })
+@ComponentScan(basePackages = {"meetingservice", "meetingservice.services","meetingservice.entities", "meetingservice.repositories", "meetingservice.controllers", "meetingservice.config", "meetingservice.exceptions"})
 public class Application {
     
 	
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
      }
-    
-    /*@Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**").allowedOrigins("*").allowCredentials(true).allowedMethods("*").allowedHeaders("*");
-            }
-        };
-    }*/
     
 
     @Bean
