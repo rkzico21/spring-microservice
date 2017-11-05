@@ -66,9 +66,10 @@ app.controller('meetingCtrl',['$scope', '$http', '$sce', '$window', 'fileUpload'
         var promise = fileUpload.uploadFileToUrl(file, uploadUrl);
 		
 		promise.then( function(response){
+			 $scope.file = "";
 			 var file = response.data;
 			 $scope.files.push({url:file._links.self.href, name:file.name, contentUrl:file._links.content.href});
-		
+			
 		});
 		}
     };

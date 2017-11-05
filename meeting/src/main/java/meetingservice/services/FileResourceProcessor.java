@@ -27,8 +27,8 @@ public class FileResourceProcessor implements ResourceProcessor<Resource<File>> 
         Link selfLink = ControllerLinkBuilder.linkTo(linkBuilder).withSelfRel();
         fileResource.add(selfLink);
     	
-        ResponseEntity controllerLinkBuilder1 = controllerLinkBuilder1 = ControllerLinkBuilder.methodOn(FileController.class).downloadFile(file.getId());
-        Link contentLink = ControllerLinkBuilder.linkTo(controllerLinkBuilder1).withRel("content");
+        ResponseEntity contentLinkBuilder = ControllerLinkBuilder.methodOn(FileController.class).downloadFile(file.getId());
+        Link contentLink = ControllerLinkBuilder.linkTo(contentLinkBuilder).withRel("content");
         fileResource.add(contentLink);
     	
     	

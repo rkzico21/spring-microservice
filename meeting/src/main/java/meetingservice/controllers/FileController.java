@@ -101,7 +101,7 @@ public class FileController {
 	        return ResponseEntity.ok()
 	                .contentLength(resource.contentLength())
 	                .header("Content-Disposition","attachment; filename=" + file.getName())
-	                //this line doesnt seem to work as i set the file format in the controller request mapping
+	                //this line doesn't seem to work as I set the file format in the controller request mapping
 	                .contentType(MediaType.parseMediaType(file.getContentType()))
 	                .body(resource);
 	    	

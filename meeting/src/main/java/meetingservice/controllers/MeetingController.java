@@ -50,7 +50,7 @@ public class MeetingController {
 	 
 	 @RequestMapping(method = RequestMethod.GET)
 	 @ResponseStatus(HttpStatus.OK)
-	 public Resources<Resource<Meeting>> index() {
+	 public Resources<Resource<Meeting>> getMeetings() {
 	    
 		    logger.debug("Get meetings");
 	    	Iterable<Meeting> meetings = service.getMeetings();
@@ -65,7 +65,7 @@ public class MeetingController {
 	        logger.debug("Found: " +meetingResources.size() + " meeting(s)");
 	    	
 			return new Resources<>(meetingResources);
-	    }
+	  }
 	 
 	 
 	 @RequestMapping(method = RequestMethod.GET, value="/{id}")
@@ -80,10 +80,10 @@ public class MeetingController {
 	    @ResponseStatus(HttpStatus.CREATED)
 	    public Resource<Meeting> createMeeting(@Valid @RequestBody Meeting entity, HttpServletResponse response) throws Throwable {
 	    	Meeting meeting = service.add(entity); 
-	    	
 	    	Resource<Meeting> resource = resourceProcessor.process(new Resource<Meeting>(meeting));
 	    	response.setStatus(HttpServletResponse.SC_CREATED);
 	    	response.addHeader("Location", resource.getLink("self").getHref());
+	    	
 	    	return resource;
 	    }
 	    
@@ -110,8 +110,8 @@ public class MeetingController {
 	    	}
 	    	
 	        File file = fileService.Store(id, uploadedFile);
-	    	
-	    	Resource<File> resource = fileResourceProcessor.process(new Resource<File>(file));
+	        
+	        Resource<File> resource = fileResourceProcessor.process(new Resource<File>(file));
 	    	response.setStatus(HttpServletResponse.SC_CREATED);
 	    	response.addHeader("Location", resource.getLink("self").getHref());
 	    	return resource;
@@ -143,7 +143,7 @@ public class MeetingController {
 	    @RequestMapping(method = RequestMethod.DELETE, value="/{id}")
 	    @ResponseStatus(HttpStatus.NO_CONTENT)
 	    public void removeMeeting(@PathVariable(value="id") Long id) {
-	    	logger.debug("deleting meeting with id: %d", id);
+	    	logger.debug(String.format("deleting meeting with id: %d", id));
 	    	service.delete(id);
 	    }
 	    
@@ -160,5 +160,4 @@ public class MeetingController {
 	    	
 	    	return meeting;
 	    }
-	    
 }

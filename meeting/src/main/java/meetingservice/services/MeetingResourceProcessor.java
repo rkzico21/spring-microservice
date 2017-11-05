@@ -39,7 +39,7 @@ public class MeetingResourceProcessor implements ResourceProcessor<Resource<Meet
         }
         catch (Throwable e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
         
         return meetingResource;

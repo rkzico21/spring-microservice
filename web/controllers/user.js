@@ -1,5 +1,5 @@
-var app = angular.module('demoapp'); 
-app.controller('userCtrl', function($scope, $http, $sce, $window) {
+//var app = angular.module('demoapp'); 
+app.controller('userCtrl', function($scope, $http, $sce, $window, $cookies) {
     $scope.showUser=false;
     $scope.userList = [];
 	var url = "http://localhost:8888/api/user";
@@ -42,6 +42,21 @@ app.controller('userCtrl', function($scope, $http, $sce, $window) {
 		
         
     };
+	
+	//For testing purpose
+	$scope.reloadUser = function() {
+		var url = "http://localhost:8888/api/user";
+		$http.get(url)
+		    .then(function(response) {
+	  
+			if(response.data._embedded) {
+	  
+				angular.forEach(response.data._embedded.userResources, function(item) {
+					//addUserToList(item.user);
+			});
+	  }
+    })
+	};
 	
 	$scope.handleClick = function(userId){
 	    $window.localStorage['userId'] = userId;

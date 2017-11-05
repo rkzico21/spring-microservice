@@ -26,7 +26,6 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ApiErrorResponse handleThrowable(final Exception ex) {
-      ex.printStackTrace();
       return new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Internal server error while processing request." , ex.getClass().getCanonicalName());
     }
     
@@ -49,7 +48,7 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiErrorResponse handleValidationError(final MethodArgumentNotValidException ex) {
-    	Errors validtionErrors =	ex.getBindingResult();
+    	Errors validtionErrors = ex.getBindingResult();
     	String message = "Validation failed. " + validtionErrors.getErrorCount() + " error(s)";
     	List<String> errors = new ArrayList<>();
     	for (ObjectError error : validtionErrors.getAllErrors()) {

@@ -1,9 +1,8 @@
-var app = angular.module('demoapp'); 
-app.controller('sessionCtrl', function($scope, $http, $sce, $window) {
+  app.controller('sessionCtrl', function($scope, $http, $sce, $window, $cookies) {
 	// $window.localStorage.clear();
     $scope.signin = function() {
 	  
-		var url = "http://localhost:9991/login";
+		var url = "http://localhost:8888/api/auth/login";
 		$sce.trustAsResourceUrl(url);
 		$http({
 				method: 'POST',
@@ -18,10 +17,12 @@ app.controller('sessionCtrl', function($scope, $http, $sce, $window) {
 			})
 		.then(function(response) {
 			 var data = response.data;
-			 $window.localStorage['token'] = data.access_token;
-			 if ($window.localStorage.getItem('redirectUrl')) {
+			 $cookies.put('access_token', data.access_token); 
+			 $cookies.put('refresh_token', data.refresh_token); 
+			 
+			 if ($window.sessionStorage.getItem('redirectUrl')) {
               // may also use sessionStorage
-					$window.location.href = $window.localStorage.getItem('redirectUrl');
+			       $window.location.href = $window.sessionStorage.getItem('redirectUrl');
 			  }
 			});
 		
@@ -29,8 +30,9 @@ app.controller('sessionCtrl', function($scope, $http, $sce, $window) {
     };
 	
 	$scope.signout = function() {
-	  
-			 $window.localStorage.clear();
+			 $window.sessionStorage.clear();
+			 $cookies.remove("access_token");
+			 $cookies.remove("refresh_token");
 			 $window.location.href = "/home.html"
         
     };

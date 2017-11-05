@@ -8,7 +8,22 @@ app:
 
 jwt:
   header: Authorization
-  expires_in: 30000 # 10 minutes
+  expires_in: 120 # 5 minutes
   secret: queenvictoria
   cookie: AUTH-TOKEN
+  refresh_token_expires_in: 300 
 
+
+spring:
+   jpa:
+     database: POSTGRESQL
+     show-sql: true 
+     hibernate:
+        naming-strategy: org.hibernate.cfg.DefaultNamingStrategy
+#postgres config
+   datasource:
+     platform: postgres 
+     url: jdbc:postgresql://127.0.0.1:5432/userdb
+     username: postgres
+     password: admin
+     driverClassName: org.postgresql.Driver

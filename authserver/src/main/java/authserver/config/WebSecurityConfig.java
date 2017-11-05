@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -25,6 +28,9 @@ import authserver.security.auth.TokenAuthenticationFilter;
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	 public static final String FORM_BASED_LOGIN_ENTRY_POINT = "/login";
+	 public static final String TOKEN_REFRESH_ENTRY_POINT = "/token";
+	
 
     @Value("${jwt.cookie}")
     private String TOKEN_COOKIE;
@@ -35,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    private JwtUserDetailService jwtUserDetailsService;
+    private JwtUserDetailService userDetailService;
 
     @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
@@ -45,13 +51,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-     	auth.userDetailsService(jwtUserDetailsService);
+     	//auth.userDetailsService(jwtUserDetailsService);
 
-        auth.inMemoryAuthentication()
+     	auth.authenticationProvider(authenticationProvider());
+     	/*auth.inMemoryAuthentication()
          .withUser("admin").password("admin").roles("ADMIN")
          .and()
          .withUser("user").password("userPass").roles("USER");
- 
+ */
+    }
+    
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider
+          = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailService);
+        authProvider.setPasswordEncoder(encoder());
+        return authProvider;
+    }
+     
+    @Bean
+    public PasswordEncoder encoder() {
+        return new BCryptPasswordEncoder(11);
     }
 
     @Autowired
@@ -70,7 +91,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                . authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll().and()
+                .antMatchers(FORM_BASED_LOGIN_ENTRY_POINT).permitAll()
+                .antMatchers(TOKEN_REFRESH_ENTRY_POINT).permitAll().and()
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated().and()
@@ -82,7 +104,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint( restAuthenticationEntryPoint ).and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/api/auth/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .deleteCookies(TOKEN_COOKIE);
 
     }

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <script src="angular.min.js"></script>
+<script src="angular-cookies.min.js"></script>
 <body ng-app="demoapp">
 
 
@@ -14,10 +15,14 @@
     <input type="text" ng-model="username" size="50" placeholder="User name">
     <input type="text" ng-model="userfullname" size="50" placeholder="Full name">
     <input type="text" ng-model="useremail" size="50" placeholder="Email">
-    <input type="submit" value="Add New">
+    <input type="password" ng-model="password" size="50" placeholder="Password">
+	<input type="submit" value="Add New">
 </form>
 
 <br>
+<!--
+<button ng-click="reloadUser()">Reload user</button>
+-->
 
 <h2>User List</h2>
 <div >

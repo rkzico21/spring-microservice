@@ -111,8 +111,18 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
-	</dependencies>
+	
+	
+	  <dependency>
+         <groupId>net.sf.jasperreports</groupId>
+         <artifactId>jasperreports</artifactId>
+         <version>6.4.0</version>
+      </dependency>
  
+	
+	</dependencies>
+	
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
