@@ -12,13 +12,14 @@ import userservice.CustomJRDataSource;
 import userservice.MessageSenderService;
 import userservice.entities.User;
 import userservice.exceptions.UserNotFoundException;
+import userservice.integration.UserResourceProcessor;
 import userservice.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -50,17 +51,20 @@ public class UserController {
    
    @Autowired
    MessageSenderService messageService;
-	
+   
+   @Autowired
+   UserResourceProcessor resourceProcessor;
+   
    @RequestMapping(method = RequestMethod.GET)
-   public Resources<UserResource> index() {
+   public Resources<Resource<User>> index() {
     
 	   logger.info("Get all the users");
        Iterable<User> users = service.findAll();
     	
-    	List<UserResource> userResourcest = new ArrayList<>();
+    	List<Resource<User>> userResourcest = new ArrayList<>();
     	
     	for( User user : users ) {
-        	userResourcest.add(new UserResource(user));
+        	userResourcest.add(resourceProcessor.process(new Resource<User>(user)));
         }
     	
 		return new Resources<>(userResourcest);
@@ -68,7 +72,7 @@ public class UserController {
     
     
     @RequestMapping(method = RequestMethod.GET, value= "/{id}")
-    public UserResource getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
+    public Resource<User> getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
         logger.info(String.format("Finding user with id: %d", id));
     	
     	User user = service.findOne(id);
@@ -79,18 +83,18 @@ public class UserController {
         }
     	
     	logger.info(String.format("Finding user with id: %d, User:%s", id, user));
-    	return new UserResource(user);
+    	return resourceProcessor.process(new Resource<User>(user));
     }
     
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResource registerUser(@Valid @RequestBody User entity) {
+    public Resource<User> registerUser(@Valid @RequestBody User entity) {
     	
         logger.info(String.format("Adding new user. User:%s", entity));
         User user = service.add(entity);
         messageService.SendMessage(routingKey, user);
         logger.info(String.format("New user created. User:%s", user));
-        return new UserResource(user);
+        return resourceProcessor.process(new Resource<User>(user));
     }
     
     @RequestMapping(method = RequestMethod.GET, value= "/report")
@@ -153,18 +157,3 @@ public class UserController {
                 .body(resources);
     }
  }
-
-
-class UserResource extends ResourceSupport {
-
-	private final User user;
-
-	public UserResource(User user) {
-		
-		this.user = user;
-	}
-
-	public User getUser() {
-		return this.user;
-	}
-}

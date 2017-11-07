@@ -20,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"userservice.entities"})
 @EnableJpaRepositories(basePackages = { "userservice.repositories" })
-@ComponentScan(basePackages = {"userservice","userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.exceptions"})
+@ComponentScan(basePackages = {"userservice","userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.integration", "userservice.exceptions"})
 public class Application {
     
 	

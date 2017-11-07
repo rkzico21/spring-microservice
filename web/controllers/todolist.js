@@ -1,17 +1,19 @@
-var app = angular.module('demoapp'); 
 app.controller('todoCtrl', function($scope, $http, $sce, $window) {
     $scope.todoList = [];
+	var url = $window.localStorage["todolistUri"] || false;
 	var userId = $window.localStorage["userId"] || false;
-	var url = "http://localhost:8888/api/todolist?userid="+userId.toString();
-	var trustedurl = $sce.trustAsResourceUrl(url);
+	if(url) {
+		var trustedurl = $sce.trustAsResourceUrl(url);
 	
-	$http.get(url)
-    .then(function(response) {
-	   angular.forEach(response.data._embedded.todoLists, function(item) {
+		$http.get(url)
+		.then(function(response) {
+			
+			if(response.data._embedded) {
+		angular.forEach(response.data._embedded.todoLists, function(item) {
 	        $scope.todoList.push({todoText:item.title, done:false, url:item._links.self.href});
-      
+		});}
 	  });
-    });
+	}
 	
     $scope.todoAdd = function() {
 	  var dataObj = {
