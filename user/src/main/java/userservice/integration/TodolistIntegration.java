@@ -49,7 +49,9 @@ public class TodolistIntegration {
 
 		List<ServiceInstance> instances = discoveryClient.getInstances("todolistservice");
 		
-		instance = instances.get(0);
+		if(instances.size() > 0 ) {
+			instance = instances.get(0);
+		 }
 		
 		
 
@@ -62,19 +64,23 @@ public class TodolistIntegration {
 		Traverson traverson = new Traverson(uri, MediaTypes.HAL_JSON);
         Link link = traverson.follow("stores", "search", "by-location")
 				.withTemplateParameters(parameters).asLink();*/
-		URI uri = UriComponentsBuilder.fromHttpUrl( instance.getUri().toString()).path("/todolist").
+		
+		if(instance != null) {
+			URI uri = UriComponentsBuilder.fromHttpUrl( instance.getUri().toString()).path("/todolist").
 			    query("userid={keyword}").buildAndExpand(parameters.get("userid"))
                 .toUri();
-		
-		
-		String href = uri.toString();
- 		if (host!=null && instance != null) {
-			href = reconstructURI(host, prefix, href);
-		}
+			
+			String href = uri.toString();
+ 		    if (host!=null && instance != null) {
+			   href = reconstructURI(host, prefix, href);
+		    }
  		
-		log.info("Found todolist link pointing to {}.", href);
+		    log.info("Found todolist link pointing to {}.", href);
 
-		return new Link(href, "todolist");
+		   return new Link(href, "todolist");
+		}
+		
+		return null;
 	}
 
 	private String reconstructURI(String host, String prefix, String href) {
