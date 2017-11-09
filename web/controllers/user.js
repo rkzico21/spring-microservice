@@ -17,7 +17,8 @@ app.controller('userCtrl', function($scope, $http, $sce, $window) {
 	
 	
 	addUserToList = function(user) {
-		$scope.userList.push({userId:user.id, userName:user.name, userFullName:user.fullName, userEmail:user.email, userTodolist: user._links.todolist.href});
+		var userTodolist = user._links.todolist ? user._links.todolist.href : null;
+		$scope.userList.push({userId:user.id, userName:user.name, userFullName:user.fullName, userEmail:user.email, userTodolist: userTodolist});
 	};
 	
     $scope.userAdd = function() {
@@ -25,6 +26,7 @@ app.controller('userCtrl', function($scope, $http, $sce, $window) {
 				name: $scope.username,
 				fullName: $scope.userfullname,
 				email: $scope.useremail,
+				password: $scope.password
 				
 		};	
 		
@@ -32,8 +34,8 @@ app.controller('userCtrl', function($scope, $http, $sce, $window) {
 	
 		$http.post(url, dataObj)
 		.then(function(response) {
-       	    var data = response.data;
-			addUserToList(data.user);
+       	    var user = response.data;
+			addUserToList(user);
 			
 			$scope.username = "";
 			$scope.useremail="";
