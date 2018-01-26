@@ -1,14 +1,22 @@
 package authserver.entities;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.Immutable;
 import org.hibernate.validator.constraints.NotEmpty;
+
 
 @Entity
 @Table(name = "\"user\"")
@@ -20,6 +28,7 @@ public class User{
     private Long Id;
 	
 	@NotEmpty(message = "name is required field")
+	@Column(unique=true)
 	private String name;
 	
 	@NotEmpty(message = "email is required field.")
@@ -33,6 +42,13 @@ public class User{
 	@NotEmpty(message = "password is required field.")
 	private String password;
 	
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_role", 
+        joinColumns = { @JoinColumn(name = "user_id") }, 
+        inverseJoinColumns = { @JoinColumn(name = "role_id") }
+    )
+	private Set<Permission> roles = new HashSet<Permission>(0);
 
     User() {}
 
@@ -63,6 +79,10 @@ public class User{
     
     public String getPassword() {
     	return this.password;
+    }
+    
+    public Set<Permission> getRoles() {
+    	return this.roles;
     }
     
     @Override

@@ -1,17 +1,11 @@
 package meetingservice.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import meetingservice.MessageSenderService;
 import meetingservice.entities.File;
-import meetingservice.entities.Meeting;
 import meetingservice.exceptions.FileNotFoundException;
-import meetingservice.exceptions.MeetingNotFoundException;
 import meetingservice.services.FileResourceProcessor;
 import meetingservice.services.FileService;
-
-import org.apache.tomcat.util.http.fileupload.IOUtils;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,19 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -43,15 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 public class FileController {
     
    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-   
-   //Save the uploaded file to this folder
-  
-   private final static String routingKey = "spring-boot";
-   
-   
-   @Autowired
-   MessageSenderService messageService;
-   
 
    @Autowired
    FileService fileService;

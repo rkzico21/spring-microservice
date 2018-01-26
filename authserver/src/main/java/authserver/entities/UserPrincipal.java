@@ -3,6 +3,7 @@ package authserver.entities;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,7 +35,12 @@ public class UserPrincipal implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuths = new ArrayList<GrantedAuthority>();
-        grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
+        Set<Permission> userRoles = user.getRoles();
+        for (Permission role : userRoles) {
+        	grantedAuths.add(new SimpleGrantedAuthority(role.getName()));
+        	//grantedAuths.add(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        
         this.authorities = grantedAuths;
         return this.authorities;
     }

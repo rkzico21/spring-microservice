@@ -1,0 +1,19 @@
+SELECT DISTINCT public.meeting.date_time,
+	public.meeting.subject,
+	public.meeting.location,
+	public.meeting.subject,
+	public.meeting.location,
+	public.meeting.date_time,
+	public.participant.name,
+	public.participant.position
+FROM public.meeting_participant
+	INNER JOIN public.meeting ON 
+	 public.meeting_participant.meeting_id = public.meeting.id 
+	INNER JOIN public.participant ON 
+	 public.meeting_participant.participant_id = public.participant.id 
+GROUP BY public.meeting.id,
+	public.meeting.subject,
+	public.meeting.location,
+	public.meeting.date_time,
+	public.participant.name,
+	public.participant.position

@@ -12,7 +12,7 @@
 				>
 			</PatternLayout>
 		</Console>
-		<File name="App-Appender" fileName="${path}/user.log">
+		<File name="App-Appender" fileName="${path}/messageservice.log">
 			<PatternLayout>
 				<pattern>
 					[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
@@ -26,22 +26,17 @@
 				</pattern>
 			</PatternLayout>
 		</File>
+	
 	</Appenders>
 	<Loggers>
 		<Logger name="org.springframework.web" level="info" additivity="false">
 			<AppenderRef ref="SpringBoot-Appender" />
 			<AppenderRef ref="Console-Appender" />
 		</Logger>
-		<Logger name="userservice.controllers" level="info" additivity="false">
+		<Logger name="messageservice" level="debug" additivity="false">
 			<AppenderRef ref="App-Appender" />
 			<AppenderRef ref="Console-Appender" />
 		</Logger>
-		<Logger name="org.hibernate.SQL" level="debug">
-			<AppenderRef ref="App-Appender" />
-	    </Logger>
-	    <Logger name="org.hibernate.tool.hbm2ddl" level="debug">
-			<AppenderRef ref="App-Appender" />
-	    </Logger>
 		<Root>
 			<AppenderRef ref="Console-Appender" />
 		</Root>

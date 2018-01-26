@@ -11,19 +11,14 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.client.Traverson;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.netflix.appinfo.InstanceInfo;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 
 @Component
@@ -66,7 +61,7 @@ public class TodolistIntegration {
 				.withTemplateParameters(parameters).asLink();*/
 		
 		if(instance != null) {
-			URI uri = UriComponentsBuilder.fromHttpUrl( instance.getUri().toString()).path("/todolist").
+			URI uri = UriComponentsBuilder.fromHttpUrl( instance.getUri().toString()).path("/todolist/item").
 			    query("userid={keyword}").buildAndExpand(parameters.get("userid"))
                 .toUri();
 			

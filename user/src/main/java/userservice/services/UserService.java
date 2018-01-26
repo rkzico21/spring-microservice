@@ -1,6 +1,6 @@
 package userservice.services;
 
-import userservice.entities.User;
+import userservice.dtos.User;
 
 public interface UserService{
 
@@ -9,4 +9,6 @@ public interface UserService{
 	User add(User user);
 
 	User findOne(Long id);
+	
+	Iterable<User> search(String query);
 }

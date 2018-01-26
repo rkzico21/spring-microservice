@@ -43,14 +43,14 @@ public class MeetingResourceProcessorTest {
 		
 	@Test
     public void processTest()  {
-		Meeting meeting = new Meeting(1L, "subject", "location");
+		Meeting meeting = new Meeting(1L, "subject", "location", "description2", "10-02-2018 05:20:00 pm");
 		Resource<Meeting> resource = new Resource<Meeting>(meeting);
 		
 		Resource<Meeting> meetingResource =	meetingResourceProcessor.process(resource);
 	    
 		Assert.assertEquals(meeting, meetingResource.getContent());
 		
-		Assert.assertEquals(3, meetingResource.getLinks().size());
+		Assert.assertEquals(4, meetingResource.getLinks().size());
 		
 		//Test if links are created and populated
 		Link selfLink = meetingResource.getLink("self");
@@ -65,5 +65,9 @@ public class MeetingResourceProcessorTest {
 	    Assert.assertNotNull(filesUploadLink);
 	    Assert.assertNotNull(filesUploadLink.getHref());
 			    
+	    Link participantsLink = meetingResource.getLink("participants");
+		Assert.assertNotNull(participantsLink);
+	    Assert.assertNotNull(participantsLink.getHref());
+	
 	}
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import authserver.entities.User;
 import authserver.entities.UserPrincipal;
 import authserver.repositories.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JwtUserDetailService implements UserDetailsService {
@@ -22,6 +23,9 @@ public class JwtUserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(username);
         }
+        
+        System.out.println("here");
+       
         return new UserPrincipal(user);
     }
 }

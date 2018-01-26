@@ -1,9 +1,8 @@
   app.controller('sessionCtrl', function($scope, $http, $sce, $window, $cookies) {
-	// $window.localStorage.clear();
-    $scope.signin = function() {
-	  
-		var url = "http://localhost:8888/api/auth/login";
+	$scope.signin = function() {
+	    var url = "http://localhost:8888/api/auth/login";
 		$sce.trustAsResourceUrl(url);
+		console.log("Making authentication request");
 		$http({
 				method: 'POST',
 				url: url,
@@ -20,14 +19,11 @@
 			 $cookies.put('access_token', data.access_token); 
 			 $cookies.put('refresh_token', data.refresh_token); 
 			 
-			 if ($window.sessionStorage.getItem('redirectUrl')) {
-              // may also use sessionStorage
-			       $window.location.href = $window.sessionStorage.getItem('redirectUrl');
-			  }
-			});
-		
-        
-    };
+			 var redirectUrl = $window.sessionStorage.getItem('redirectUrl');
+			 $window.location.href = (redirectUrl && redirectUrl !="/login.html") ? redirectUrl : "/todolist.html"
+			 
+		});
+   };
 	
 	$scope.signout = function() {
 			 $window.sessionStorage.clear();

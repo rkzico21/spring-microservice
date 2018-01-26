@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -17,10 +18,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableResourceServer
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class UserResourceConfiguration extends ResourceServerConfigurerAdapter {
 	
-	 @Autowired
-	 TokenStore tokenStore;
+	@Autowired
+	TokenStore tokenStore;
 
 	@Autowired
 	JwtAccessTokenConverter tokenConverter;
@@ -33,8 +35,8 @@ public class UserResourceConfiguration extends ResourceServerConfigurerAdapter {
 			  .authorizeRequests()
 			  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			  .antMatchers("/**")
-             // .authenticated(); //requires for authentication
-             .permitAll();
+              .authenticated(); //requires for authentication
+              //.permitAll();
 			
 	}
 	

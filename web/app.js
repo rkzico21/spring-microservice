@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('demoapp', ['ngCookies']);
+var app = angular.module('demoapp', ['ngCookies','ngAnimate', 'ui.bootstrap']);
 
 app.config(function ($provide, $httpProvider) {
   // Intercept http calls.
@@ -48,6 +48,7 @@ app.config(function ($provide, $httpProvider) {
 			$window.sessionStorage["redirectUrl"] =$window.location.pathname;
 			
 			if($cookies.get("refresh_token")) {
+				console.log("Making authentication request");
 				var url = "http://localhost:8888/api/auth/token";
 				var http = $injector.get("$http");
 				http({
@@ -62,6 +63,8 @@ app.config(function ($provide, $httpProvider) {
 						data: {refresh_token: $cookies.get("refresh_token")}
 					  })
 					  .then(function(response) {
+						  
+						 console.log("Authentication succssfull");
 						 var data = response.data;
 						 $cookies.put('access_token', data.access_token); 
 			             $cookies.put('refresh_token', data.refresh_token); 

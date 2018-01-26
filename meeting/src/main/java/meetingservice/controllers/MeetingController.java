@@ -24,11 +24,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import meetingservice.entities.File;
 import meetingservice.entities.Meeting;
+import meetingservice.entities.Participant;
 import meetingservice.exceptions.MeetingNotFoundException;
 import meetingservice.services.FileResourceProcessor;
 import meetingservice.services.FileService;
 import meetingservice.services.MeetingResourceProcessor;
 import meetingservice.services.MeetingService;
+import meetingservice.services.ParticipantResourceProcessor;
 
 @RestController
 @RequestMapping(value="/meeting")
@@ -48,6 +50,10 @@ public class MeetingController {
 	 @Autowired
 	 FileResourceProcessor fileResourceProcessor;
 	 
+	 @Autowired
+	 ParticipantResourceProcessor participantResourceProcessor;
+	 
+	 //anyone
 	 @RequestMapping(method = RequestMethod.GET)
 	 @ResponseStatus(HttpStatus.OK)
 	 public Resources<Resource<Meeting>> getMeetings() {
@@ -67,7 +73,7 @@ public class MeetingController {
 			return new Resources<>(meetingResources);
 	  }
 	 
-	 
+	 //participant or owner or admin
 	 @RequestMapping(method = RequestMethod.GET, value="/{id}")
 	 @ResponseStatus(HttpStatus.OK)
 	 public Resource<Meeting> getMeeting(@PathVariable(value="id") Long id) {
@@ -87,6 +93,7 @@ public class MeetingController {
 	    	return resource;
 	    }
 	    
+	    //only owner
 	    @RequestMapping(method = RequestMethod.PUT, value="/{id}")
 	    @ResponseStatus(HttpStatus.OK)
 	    public Resource<Meeting> updateMeeting(@PathVariable(value="id") Long id, @Valid @RequestBody Meeting entity) throws Throwable {
@@ -97,17 +104,12 @@ public class MeetingController {
 	    	return resource;
 	    }
 	    
-	    
+	    //participants
 	    @RequestMapping(method = RequestMethod.POST, value="/{id}/files")
 	    @ResponseStatus(HttpStatus.CREATED)
 	    public Resource<File> uploadFile(@PathVariable(value="id") Long id, @RequestPart("file") MultipartFile uploadedFile, HttpServletResponse response) throws Throwable {
 	    
-	    	Meeting meeting = service.findOne(id);
-	    	
-	    	if(meeting == null) {
-	    		logger.warn("No meeting found with id " + id.toString());
-			    throw new MeetingNotFoundException(id);
-	    	}
+	    	Meeting meeting = findMeeting(id);
 	    	
 	        File file = fileService.Store(id, uploadedFile);
 	        
@@ -121,12 +123,7 @@ public class MeetingController {
 	    @ResponseStatus(HttpStatus.OK)
 	    public Resources<Resource<File>> getFiles(@PathVariable(value="id") Long id) {
 	    
-	    	Meeting meeting = service.findOne(id);
-	    	
-	    	if(meeting == null) {
-	    		logger.warn("No meeting found with id " + id.toString());
-			    throw new MeetingNotFoundException(id);
-	    	}
+	    	Meeting meeting = findMeeting(id);
 	    	
 	        Iterable<File> files = fileService.getFiles(id);
 	        List<Resource<File>> fileResources = new ArrayList<>();
@@ -147,6 +144,46 @@ public class MeetingController {
 	    	service.delete(id);
 	    }
 	    
+	    @RequestMapping(method = RequestMethod.GET, value="/{id}/participants")
+	    @ResponseStatus(HttpStatus.OK)
+	    public Resources<Resource<Participant>> getParticipants(@PathVariable(value="id") Long id) {
+	    
+	    	Meeting meeting = findMeeting(id);
+			
+	    	List<Resource<Participant>> participantResources = new ArrayList<>();
+	    	Iterable<Participant> participants = service.findParticipants(id);
+	    	
+	    	for( Participant participant : participants ) {
+	    		logger.debug(participant.toString());
+		    	participantResources.add(participantResourceProcessor.process(new Resource<Participant>(participant)));
+	    	}
+	    	
+	        logger.debug(participantResources.size() + " participant(s)");
+	    	
+			return new Resources<>(participantResources);
+	    }
+	    
+	    //only owner or authorized user
+	    @RequestMapping(method = RequestMethod.PUT, value="/{id}/participants")
+	    @ResponseStatus(HttpStatus.OK)
+	    public Resources<Resource<Participant>> updateParticipants(@PathVariable(value="id") Long id, @RequestBody List<Participant> participants) {
+	    
+	    	Meeting meeting = findMeeting(id);
+			
+	    	Iterable<Participant> updatedParticipants = service.updateParticipants(id, participants);
+	    	List<Resource<Participant>> participantResources = new ArrayList<>();
+	    	 
+	    	for( Participant participant : updatedParticipants ) {
+	    		logger.debug(participant.toString());
+		    	participantResources.add(participantResourceProcessor.process(new Resource<Participant>(participant)));
+	    	}
+	    	
+	        logger.debug(participantResources.size() + " participant(s)");
+	    	
+			return new Resources<>(participantResources);
+	    }
+	    
+	   
 	    private Meeting findMeeting(Long id) {
 	    	logger.info("Find meeting with id " + id.toString());
 		    Meeting meeting = service.findOne(id);

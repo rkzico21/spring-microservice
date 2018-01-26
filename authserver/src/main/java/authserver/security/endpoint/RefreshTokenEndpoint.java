@@ -25,9 +25,11 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,6 +54,9 @@ public class RefreshTokenEndpoint {
     
     @Autowired
     private DefaultTokenServices defaultTokenServices;
+    
+    @Autowired
+    private TokenStore tokenStore;
 	 
     /*
      * For api client
@@ -60,21 +65,24 @@ public class RefreshTokenEndpoint {
     public OAuth2AccessToken refreshToken(@RequestParam("refresh_token") String refreshToken) throws IOException, ServletException {
 
     	String grantType = "refresh_token";
-    	String clientId = "gateway";
+    	String clientId = "apiClient";
     	String refreshTokenValue = refreshToken;
-    	
-    	
+    	OAuth2RefreshToken refreshToken1 = tokenStore.readRefreshToken(refreshTokenValue);
+		OAuth2Authentication autehntication = tokenStore.readAuthenticationForRefreshToken(refreshToken1);
+		 
     	Set<String> scopes = new HashSet<String>();
-	    scopes.add("read");
-	    scopes.add("write");
-	    
-	    HashMap<String, String> requestParameters = new HashMap<String, String>();
+	   
+    	HashMap<String, String> requestParameters = new HashMap<String, String>();
 		requestParameters.put("scope", "read");
-		requestParameters.put("username", "user");
-		requestParameters.put("client_id", "gateway");
+		requestParameters.put("username", autehntication.getUserAuthentication().getName());
+		requestParameters.put("client_id", clientId);
 		requestParameters.put("grant", "password");
 	   
+		
+		
+		
     	TokenRequest tokenRequest = new TokenRequest(requestParameters, clientId, scopes, grantType);
+    	
     	OAuth2AccessToken token = defaultTokenServices.refreshAccessToken(refreshTokenValue, tokenRequest);
     	return token;
     	

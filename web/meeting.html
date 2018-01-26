@@ -1,20 +1,70 @@
 <!DOCTYPE html>
 <html>
-<script src="angular.min.js"></script>
+<head>
+	<script src="angular.min.js"></script>
+	<!-- <script src="spring-security-csrf-token-interceptor.js"></script> -->
+	<script src="angular-cookies.min.js"></script>
+	<script src="angular-animate.js"></script>
+	<script src="ui-bootstrap-tpls-2.5.0.js"></script>
+	<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
+</head>
 <body ng-app="demoapp">
 
 
 <div id="logout" ng-controller="sessionCtrl"> 
 		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
 </div>
-<div ng-controller="meetingCtrl">
+<div ng-controller="meetingCtrl" class="container">
 
 
 <form ng-submit="update(resourceUrl)">
-    <input type="text" ng-model="subject" size="50" placeholder="Subject">
-    <input type="text" ng-model="meetingLocation" size="50" placeholder="Location">
-	<input type ="file" file-model = "file"/>
-    <input type="submit" value="Update">
+    <div class="form-group">
+	   <input type="text" ng-model="subject" size="50" placeholder="Subject">
+    </div>
+	<div class="form-group">
+	  <input type="text" ng-model="meetingLocation" size="50" placeholder="Location">
+	</div>
+	<div class="form-group">
+		<input type="datetime-local" ng-model="meetingDateTime" size="50" placeholder="Date and Time"/>
+    </div>
+	<div class="form-group">
+	  <textarea ng-model="meetingDescription" rows="4" cols="50" placeholder="Description"></textarea>
+	</div>
+	<div id="participants" class="form-group">
+	{{selectedUser.name}}
+	<input type="text" 
+		ng-model="selectedUser"
+        placeholder="Search" 
+		uib-typeahead="user as user.fullName for user in getUsers($viewValue)" 
+		typeahead-loading="loadingLocations" 
+		
+		typeahead-no-results="noResults" 
+		class="form-control">
+	<i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+    <div ng-show="noResults">
+      <i class="glyphicon glyphicon-remove"></i> No Results Found
+    </div> 	
+
+	   or Add
+	  <div>
+		<input type="text" ng-model="participantName" size="50" placeholder="Name">
+		<input type="text" ng-model="participantOrganization" size="50" placeholder="Organization">
+		<input type="email" ng-model="participantEmail" placeholder="email">
+	  </div>
+	  <button class="btn" ng-click="addParticipant()">Add</button>
+	  
+	</div>
+	<div ng-repeat="participant in participants">
+      <div>
+	     <ul class="list-group"> 
+			<li>{{participant.name}}({{participant.email}})</li>
+		 </ul>
+	  </div>
+	</div>
+	<div class="form-group">
+		<input type ="file" file-model = "file"/>
+    </div>
+	<input type="submit" value="Update" class="btn btn-primary">
 </form>
 
 <br>
@@ -30,8 +80,9 @@
 
 <script src="app.js"></script>
 <script src="session.js"></script>
-
 <script src="controllers/file.js"></script>
 <script src="controllers/meeting.js"></script>
+<script src="styles/bootstrap/js/bootstrap.min.js"</script>
 </body>
 </html>
+

@@ -4,6 +4,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.access.AccessDeniedException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,14 @@ public class ExceptionHandlers {
     public ApiErrorResponse handleUserNotFoundException(final UserNotFoundException ex) {
         return new ApiErrorResponse(HttpStatus.NOT_FOUND.toString(), ex.getMessage());
     }
+    
+    
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ApiErrorResponse handleUnAuthorizedException(final Exception ex) {
+      return new ApiErrorResponse(HttpStatus.FORBIDDEN.toString(), ex.getMessage());
+    }
+    
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -56,6 +65,12 @@ public class ExceptionHandlers {
         }
     	
     	return new ApiErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.toString(), message, errors);
+    }
+    
+    @ExceptionHandler(UserExistsException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ApiErrorResponse handleUserExistsException(final UserExistsException ex) {
+        return new ApiErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.toString(), ex.getMessage());
     }
     
     

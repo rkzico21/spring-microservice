@@ -1,4 +1,4 @@
-var app = angular.module('demoapp'); 
+//var app = angular.module('demoapp'); 
 
 app.directive('fileModel', ['$parse', function ($parse) {
     return {

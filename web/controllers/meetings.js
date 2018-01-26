@@ -1,12 +1,11 @@
-var app = angular.module('demoapp'); 
-app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', 'fileUpload', function($scope, $http, $sce, $window, fileUpload) {
+app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', 'fileUpload', function($scope, $http,$sce, $window, fileUpload) {
     $scope.meetings = [];
 	var url = "http://localhost:8888/api/meeting";
 	var trustedurl = $sce.trustAsResourceUrl(url);
-	//$scope.userid=1;
+	
 	$http.get(url)
     .then(function(response) {
-	  
+		
 	   if(response.data._embedded) {
 	  
 		angular.forEach(response.data._embedded.meetings, function(meeting) {
@@ -20,6 +19,8 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', 'fileUploa
 	  var dataObj = {
 				subject: $scope.subject,
 				location: $scope.meetingLocation,
+				description: $scope.meetingDescription,
+				dateTime: $scope.meetingDateTime
 		};	
 		
 		var url = "http://localhost:8888/api/meeting";
@@ -28,26 +29,37 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', 'fileUploa
 		.then(function(response) {
        	    var meeting = response.data;
 			$scope.meetings.push({url:meeting._links.self.href, subject:meeting.subject, location:meeting.location});
-			$scope.upload(meeting._links.fileUpload.href);
+			
+			$window.localStorage['meetingUrl'] = meeting._links.self.href;
+				
+			if($scope.file) {
+				$scope.upload(meeting._links.fileUpload.href)
+			} else {
+				$window.location.href = '/meeting.html';
+			}
+			
 			$scope.subject = "";
 			$scope.meetingLocation="";
-			});;
-		
-        
-    };
+			
+			
+			});
+		};
 	
 	$scope.upload = function(uploadUrl){
-        var file = $scope.file;
+		var file = $scope.file;
         console.log('file is ' );
         console.dir(file);
+		
 		if($scope.file) {
         var promise = fileUpload.uploadFileToUrl(file, uploadUrl);
-		
 		promise.then( function(response){
 			 var file = response.data;
-			console.log("file uploaded");
+			 $window.location.href = '/meeting.html';
+			 console.log("file uploaded");
 		});
 		}
+		
+		
     };
 	
 	$scope.handleClick = function(meetingUrl){

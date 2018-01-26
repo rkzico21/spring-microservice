@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import meetingservice.controllers.MeetingController;
 import meetingservice.entities.File;
 import meetingservice.entities.Meeting;
+import meetingservice.entities.Participant;
 
 
 @Component
@@ -31,6 +32,11 @@ public class MeetingResourceProcessor implements ResourceProcessor<Resource<Meet
         Resources<Resource<File>> filesLinkBuilder = ControllerLinkBuilder.methodOn(MeetingController.class).getFiles(meeting.getId());        
     	Link filesLink = ControllerLinkBuilder.linkTo(filesLinkBuilder).withRel("files");
         meetingResource.add(filesLink);
+        
+        
+        Resources<Resource<Participant>> participantsLinkBuilder = ControllerLinkBuilder.methodOn(MeetingController.class).updateParticipants(meeting.getId(), null);        
+    	Link participantsLink = ControllerLinkBuilder.linkTo(participantsLinkBuilder).withRel("participants");
+        meetingResource.add(participantsLink);
         
         try{
         	Resource<File> filesUploadLinkBuilder = ControllerLinkBuilder.methodOn(MeetingController.class).uploadFile(meeting.getId(), null, null);        

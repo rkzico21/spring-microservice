@@ -40,6 +40,7 @@ import com.google.code.ssm.spring.SSMCacheManager;
 @ComponentScan(basePackages = {"todolistservice.entities", "todolistservice.repositories", "todolistservice.controllers", "todolistservice.config", "todolistservice.exceptions"})
 @EnableFeignClients
 //@EnableCaching
+ 
 @EnableAspectJAutoProxy
 //@ImportResource("classpath:simplesm-context.xml")
 public class Application extends CachingConfigurerSupport {

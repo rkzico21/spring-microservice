@@ -2,16 +2,13 @@ package todolistservice.repositories;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 
-import todolistservice.entities.TodoList;
+import todolistservice.entities.TodoListItem;
 
-@Service("todolistService")
+@Service
 @Repository
 public class TodolistServiceImpl implements TodolistService{
  
@@ -19,32 +16,23 @@ public class TodolistServiceImpl implements TodolistService{
     private TodoListRepository repository;
    
 	@Override
-    //@Cacheable(cacheNames = "usertodolistcache", key="#userId")
-    public Iterable<TodoList> findByUserId(Long userId) {
-    	 Iterable<TodoList> todolists = repository.findByUserId(userId);
-    	 
-        return todolists;
+    public Iterable<TodoListItem> findByUserId(Long userId) {
+    	 return repository.findByUserId(userId);
     }
 
 	@Override
-	//@CacheEvict(cacheNames = "usertodolistcache", key="#entity.UserId")
-	public TodoList add(TodoList entity) {
-		TodoList todoList = repository.save(entity);
-		return todoList;
+	public TodoListItem add(TodoListItem entity) {
+		return repository.save(entity);
 	}
 
 	@Override
-	//@Cacheable(cacheNames = "usertodolistcache", key="T(todolistservice.entities.TodoList).hash(#id.toString())") //TODO: check if it is possible to use same cache
-    public TodoList findOne(Long id) {
-		return repository.findOne(id);
-	}
-
-	@Override
-	//@CacheEvict(cacheNames = "usertodolistcache", allEntries=true)
 	public void delete(Long id) {
-
 		repository.delete(id);
-		
+	}
+
+	@Override
+	public TodoListItem findOne(Long id) {
+		return repository.findOne(id);
 	}
 
 }

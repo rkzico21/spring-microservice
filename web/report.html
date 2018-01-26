@@ -1,40 +1,45 @@
 <!--
-Copyright (c) 2013, Jaspersoft.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-!-->
-
+  Copyright (c) 2013, Jaspersoft.
+  All rights reserved.
+  
+  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  
+  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  !-->
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Report</title>
-	    <link href="styles/style.css" rel="stylesheet" type="text/css" media="screen" />
-		<link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One' rel='stylesheet' type='text/css'>
-
-	</head>
-	
-	<body>
-    
-
-				<!-- Start - This section makes the iframe load smoothly !-->
-				<div id="loadImg"><div><img src="./images/ajax-loader.gif" /></div></div>
-					<iframe height=625px width=950px seamless id="frame1" name="frame1" scroll="no" onload="document.getElementById('loadImg').style.display='none';"
-					        src="http://localhost:8060/jasperserver/flow.html?standAlone=true&decorate=no&_flowId=viewReportFlow&reportUnit=/reports/sample_report_2&j_username=jasperadmin&j_password=jasperadmin">
-					</iframe>
-				</div>
-				<!-- End - This section makes the iframe load smoothly !-->
-			</div>
-
-			<footer>
-			</footer>
-	    </div>
-	</body>
-
-	
-
+  <head>
+    <title>Report</title>
+    <script src="angular.min.js"></script>
+    <!-- <script src="spring-security-csrf-token-interceptor.js"></script> -->
+    <script src="angular-cookies.min.js"></script>
+    <script src="angular-cookies.min.js"></script>
+	<script src="angular-animate.js"></script>
+	<script src="ui-bootstrap-tpls-2.5.0.js"></script>
+	<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
+    <link href="styles/style.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href='http://fonts.googleapis.com/css?family=Pathway+Gothic+One' rel='stylesheet' type='text/css'>
+  </head>
+  <body ng-app="demoapp">
+    <div ng-controller="reportCtrl" class="container">
+      <!-- Start - This section makes the iframe load smoothly !-->
+      <div id="loadImg">
+        <div>
+          <img src="./images/ajax-loader.gif" />
+        </div>
+      </div>
+      <iframe height=625px width=950px seamless id="frame1" name="frame1" scroll="no" onload="document.getElementById('loadImg').style.display='none';"
+        src="">
+      </iframe>
+      <!-- End - This section makes the iframe load smoothly !-->
+      <footer>
+      </footer>
+    </div>
+    <script src="app.js"></script>
+    <script src="session.js"></script>
+    <script src="controllers/report.js"></script>
+    <script src="styles/bootstrap/js/bootstrap.min.js"</script>
+  </body>
 </html>

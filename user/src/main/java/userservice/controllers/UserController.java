@@ -1,50 +1,36 @@
 package userservice.controllers;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.ArrayList;
+import java.util.List;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import userservice.CustomJRDataSource;
-import userservice.MessageSenderService;
-import userservice.entities.User;
-import userservice.exceptions.UserNotFoundException;
-import userservice.integration.UserResourceProcessor;
-import userservice.services.UserService;
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.RestController;
+
+import userservice.MessageSenderService;
+import userservice.dtos.User;
+import userservice.exceptions.UserNotFoundException;
+import userservice.integration.UserResourceProcessor;
+import userservice.services.UserService;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
     
    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-   
-   private final static String routingKey = "spring-boot";
    
    @Autowired
    UserService service;
@@ -53,26 +39,27 @@ public class UserController {
    MessageSenderService messageService;
    
    @Autowired
-   UserResourceProcessor resourceProcessor;
+   UserResourceProcessor userResourceProcessor;
    
+   @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
    @RequestMapping(method = RequestMethod.GET)
    public Resources<Resource<User>> index() {
     
 	   logger.info("Get all the users");
        Iterable<User> users = service.findAll();
-    	
-    	List<Resource<User>> userResourcest = new ArrayList<>();
-    	
-    	for( User user : users ) {
-        	userResourcest.add(resourceProcessor.process(new Resource<User>(user)));
+       
+       List<Resource<User>> userResourcest = new ArrayList<>();
+    
+       for( User user : users ) {
+        	userResourcest.add(userResourceProcessor.process(new Resource<User>(user)));
         }
     	
 		return new Resources<>(userResourcest);
     }
-    
-    
-    @RequestMapping(method = RequestMethod.GET, value= "/{id}")
-    public Resource<User> getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
+   
+   @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
+   @RequestMapping(method = RequestMethod.GET, value= "/{id}")
+   public Resource<User> getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
         logger.info(String.format("Finding user with id: %d", id));
     	
     	User user = service.findOne(id);
@@ -82,22 +69,41 @@ public class UserController {
     		throw new UserNotFoundException(id);
         }
     	
-    	logger.info(String.format("Finding user with id: %d, User:%s", id, user));
-    	return resourceProcessor.process(new Resource<User>(user));
+    	logger.debug(String.format("Finding user with id: %d, User:%s", id, user));
+    	return userResourceProcessor.process(new Resource<User>(user));
     }
     
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_create')")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Resource<User> registerUser(@Valid @RequestBody User entity) {
+    public Resource<User> registerUser(@Valid @RequestBody User userdto) {
     	
-        logger.info(String.format("Adding new user. User:%s", entity));
-        User user = service.add(entity);
-        messageService.SendMessage(routingKey, user);
+        logger.info(String.format("Adding new user. User:%s", userdto));
+        User user = service.add(userdto);
+       
         logger.info(String.format("New user created. User:%s", user));
-        return resourceProcessor.process(new Resource<User>(user));
+        return userResourceProcessor.process(new Resource<User>(user));
     }
     
-    @RequestMapping(method = RequestMethod.GET, value= "/report")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
+    @RequestMapping(method = RequestMethod.GET, value= "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public Resources<Resource<User>> searchUser(@RequestParam(value = "fullName", required = false) String query) {
+    	
+    	logger.info("Get all the users");
+    	
+    	Iterable<User> users = service.search(query);
+     	List<Resource<User>> userResources = new ArrayList<>();
+     	
+     	for( User user : users ) {
+         	userResources.add(userResourceProcessor.process(new Resource<User>(user)));
+         }
+     	
+ 		return new Resources<>(userResources); 
+    }
+   
+    
+    /*@RequestMapping(method = RequestMethod.GET, value= "/report")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity getReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
     	
@@ -155,5 +161,5 @@ public class UserController {
                 .header("Content-Disposition", "inline; filename=file.pdf")
                 .contentType(MediaType.parseMediaType("application/pdf"))
                 .body(resources);
-    }
+    }*/
  }

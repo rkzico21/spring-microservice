@@ -1,16 +1,15 @@
 package todolistservice.repositories;
 
 
-
-import todolistservice.entities.TodoList;
+import todolistservice.entities.TodoListItem;
 
 public interface TodolistService{
 
-	Iterable<TodoList> findByUserId(Long userId);
+	Iterable<TodoListItem> findByUserId(Long userId);
 	
-	TodoList add(TodoList todolist);
+	TodoListItem add(TodoListItem item);
 
-	TodoList findOne(Long id);
-
+	TodoListItem findOne(Long id);
+	
 	void delete(Long id);
 }

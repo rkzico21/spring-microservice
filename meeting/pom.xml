@@ -72,6 +72,12 @@
     		<version>2.9.0</version>
     	    <scope>test</scope>
 	 	</dependency>
+	 	
+	 	<dependency>
+     		<groupId>com.jayway.jsonpath</groupId>
+    		<artifactId>json-path</artifactId>
+    		<scope>test</scope>
+ 		</dependency>
         <!-- end::tests[] -->
 	 <dependency>
 		<groupId>org.springframework.cloud</groupId>
@@ -121,7 +127,7 @@
       <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
+	  </dependency>
 	</dependencies>
  
 	<dependencyManagement>

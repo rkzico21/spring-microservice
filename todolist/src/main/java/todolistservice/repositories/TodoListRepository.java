@@ -1,14 +1,12 @@
 package todolistservice.repositories;
 
-
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import todolistservice.entities.TodoList;
+import todolistservice.entities.TodoListItem;
 
 @Repository
-public interface TodoListRepository  extends CrudRepository<TodoList, Long>   {
- 
-	Iterable<TodoList> findByUserId(@Param("userid") Long userid);
+public interface TodoListRepository  extends CrudRepository<TodoListItem, Long>   {
+	Iterable<TodoListItem> findByUserId(@Param("userid") Long userid);
 }

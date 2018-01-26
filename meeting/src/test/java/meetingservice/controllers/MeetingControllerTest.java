@@ -30,11 +30,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import meetingservice.entities.File;
 import meetingservice.entities.Meeting;
+import meetingservice.entities.Participant;
 import meetingservice.exceptions.ExceptionHandlers;
 import meetingservice.services.FileResourceProcessor;
 import meetingservice.services.FileService;
 import meetingservice.services.MeetingResourceProcessor;
 import meetingservice.services.MeetingService;
+import meetingservice.services.ParticipantResourceProcessor;
 
 @RunWith(SpringRunner.class)
 //@SpringBootTest({"server.port:0", "eureka.client.enabled:false"}) //helpful for integration tests
@@ -53,10 +55,15 @@ public class MeetingControllerTest {
 	@Mock
 	FileResourceProcessor fileResourceProcessor;
 	
+	@Mock
+	ParticipantResourceProcessor participantResourceProcessor;
+	
 	@InjectMocks
     MeetingController controllerUnderTest;
 	
 	List<Meeting> meetings;
+	
+	List<Participant> participants;
 	
 	
 	ObjectMapper objectMapper;
@@ -73,8 +80,12 @@ public class MeetingControllerTest {
 				  .setControllerAdvice(new ExceptionHandlers())
 				  .build();
 		 this.meetings = new  ArrayList<Meeting>();
-		 this.meetings.add(new Meeting(1L, "subject1", "location1"));
-		 this.meetings.add(new Meeting(2L, "subject2", "location2"));
+		 this.meetings.add(new Meeting(1L, "subject1", "location1", "description1", "01-01-2018 05:20:00 pm"));
+		 this.meetings.add(new Meeting(2L, "subject2", "location2", "description2", "10-02-2018 05:20:00 pm"));
+		 
+		 this.participants = new  ArrayList<Participant>();
+		 this.participants.add(new Participant(1L, 1L, "Name", "Position", "user1@example.com",  "Organization"));
+		 this.participants.add(new Participant(2L, 0L, "Name2", "Position1", "user2@example.com",  "Organization1"));
 		 
 	}
 	
@@ -88,7 +99,9 @@ public class MeetingControllerTest {
     	mvc.perform(MockMvcRequestBuilders.get("/meeting/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.subject", is(meetings.get(0).getSubject())))
-                .andExpect(jsonPath("$.location", is(meetings.get(0).getLocation())));
+                .andExpect(jsonPath("$.location", is(meetings.get(0).getLocation())))
+                .andExpect(jsonPath("$.description", is(meetings.get(0).getDescription())))
+                .andExpect(jsonPath("$.dateTime", is(meetings.get(0).getDateTime())));
     }
 	
 	
@@ -122,7 +135,7 @@ public class MeetingControllerTest {
     @Test
     public void createMeeting() throws Exception {
     	
-    	Meeting meeting = new Meeting(3L, "subject", "location");
+    	Meeting meeting = new Meeting(3L, "subject", "location", "description", "10-02-2018 05:20:00 pm");
     	
     	when(meetingService.add(Mockito.any(Meeting.class))).thenReturn(meeting);
     	
@@ -149,7 +162,7 @@ public class MeetingControllerTest {
     
     @Test
     public void createMeetingWithNotSupportedContentType() throws Exception {
-    	Meeting meeting = new Meeting(3L, "subject", "location");
+    	Meeting meeting = new Meeting(3L, "subject", "location", "description", "");
     	mvc.perform(MockMvcRequestBuilders.post("/meeting")
     			.content(objectMapper.writeValueAsString(meeting))
     			.contentType("form/urlencode")
@@ -163,6 +176,14 @@ public class MeetingControllerTest {
     	mvc.perform(MockMvcRequestBuilders.delete("/meeting/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
         verify(meetingService, times(1)).delete(1L);
+    }
+    
+    @Test
+    public void getFilesWithNonExistingMeetingIdTest() throws Exception {
+		when(meetingService.findOne(1L)).thenReturn(null);
+		mvc.perform(MockMvcRequestBuilders.get("/meeting/1/files")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
     }
     
     @Test
@@ -221,7 +242,78 @@ public class MeetingControllerTest {
        Assert.assertEquals( link.getHref(), result.getResponse().getHeader("Location"));
     }
     
+    @Test
+    public void updateParticipantsWithNonExistingMeetingId() throws Exception {
+		when(meetingService.findOne(1L)).thenReturn(null);
+		mvc.perform(MockMvcRequestBuilders.put("/meeting/1/participants")
+				.content(objectMapper.writeValueAsString(this.participants))
+			    .contentType("application/json")
+			    .accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound());
+    }
     
     
-	
+    @Test
+    public void updateParticipantsWithExistingMeetingId() throws Exception {
+    	Meeting meeting = this.meetings.get(0);
+		when(meetingService.findOne(1L)).thenReturn(meeting);
+		when(meetingService.updateParticipants(eq(1L), Mockito.any())).thenReturn(participants);
+		
+		
+		Resource<Participant> participantResource1 = new Resource<Participant>(participants.get(0));
+    	when(participantResourceProcessor.process(participantResource1)).thenReturn(participantResource1);
+    	
+    	Resource<Participant> participantResource2 = new Resource<Participant>(participants.get(1));
+    	when(participantResourceProcessor.process(participantResource2)).thenReturn(participantResource2);
+		
+		mvc.perform(MockMvcRequestBuilders.put("/meeting/1/participants")
+				.content(objectMapper.writeValueAsString(this.participants))
+			    .contentType("application/json")
+			    .accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content", hasSize(participants.size())))
+                .andExpect(jsonPath("$.content[0].id", is(participants.get(0).getId().intValue())))
+        	    .andExpect(jsonPath("$.content[0].name", is(participants.get(0).getName())))
+        	    .andExpect(jsonPath("$.content[0].email", is(participants.get(0).getEmail())))
+        	    .andExpect(jsonPath("$.content[1].id", is(participants.get(1).getId().intValue())))
+        	    .andExpect(jsonPath("$.content[1].name", is(participants.get(1).getName())))
+        	    .andExpect(jsonPath("$.content[1].email", is(participants.get(1).getEmail())));
+    }
+    
+    
+    
+    @Test
+    public void getParticipantsWithTest() throws Exception {
+    	Meeting meeting = this.meetings.get(0);
+		when(meetingService.findOne(1L)).thenReturn(meeting);
+		when(meetingService.findParticipants(meeting.getId())).thenReturn(participants);
+		
+		
+		Resource<Participant> participantResource1 = new Resource<Participant>(participants.get(0));
+    	when(participantResourceProcessor.process(participantResource1)).thenReturn(participantResource1);
+    	
+    	Resource<Participant> participantResource2 = new Resource<Participant>(participants.get(1));
+    	when(participantResourceProcessor.process(participantResource2)).thenReturn(participantResource2);
+		
+		mvc.perform(MockMvcRequestBuilders.get("/meeting/1/participants")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.content", hasSize(participants.size())))
+                .andExpect(jsonPath("$.content[0].id", is(participants.get(0).getId().intValue())))
+        	    .andExpect(jsonPath("$.content[0].name", is(participants.get(0).getName())))
+        	    .andExpect(jsonPath("$.content[0].email", is(participants.get(0).getEmail())))
+        	    .andExpect(jsonPath("$.content[1].id", is(participants.get(1).getId().intValue())))
+        	    .andExpect(jsonPath("$.content[1].name", is(participants.get(1).getName())))
+        	    .andExpect(jsonPath("$.content[1].email", is(participants.get(1).getEmail())));
+    }
+    
+    
+    
+    
+    @Test
+    public void getParticipantsWithNonExistingMeeetingIdTest() throws Exception {
+		when(meetingService.findOne(1L)).thenReturn(null);
+		mvc.perform(MockMvcRequestBuilders.get("/meeting/1/participants").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }

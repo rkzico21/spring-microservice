@@ -1,29 +1,65 @@
 <!DOCTYPE html>
 <html>
+<head>
 <script src="angular.min.js"></script>
+
+<script src="scripts/jwt-decode-master/build/jwt-decode.js"></script>
 <script src="angular-cookies.min.js"></script>
+<script src="angular-cookies.min.js"></script>
+<script src="angular-animate.js"></script>
+<script src="ui-bootstrap-tpls-2.5.0.js"></script>
+<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
+   
+</head>
 <body ng-app="demoapp">
 
 
 <div id="logout" ng-controller="sessionCtrl"> 
 		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
 </div>
-<div ng-controller="userCtrl">
-<h2>User Form</h2>
-
+<div ng-controller="userCtrl" class="container">
+<!--<div ng-show=isAdmin>
+</div>-->
+<ul>
+ <li>
+  <a href="#" ng-click="displayForm(true)" ng-show="showUser" >Add User</a>
+  <a href="#" ng-click="displayForm(false)" ng-show="showForm">Users</a>
+ </li>	
+<ul>
+<div ng-show="showForm">
 <form ng-submit="userAdd()">
-    <input type="text" ng-model="username" size="50" placeholder="User name">
-    <input type="text" ng-model="userfullname" size="50" placeholder="Full name">
-    <input type="text" ng-model="useremail" size="50" placeholder="Email">
-    <input type="password" ng-model="password" size="50" placeholder="Password">
-	<input type="submit" value="Add New">
+	<div class="form-group">
+    <input type="text" ng-model="username" size="50" placeholder="User name"/>
+    </div>
+	<div class="form-group">
+	<input type="text" ng-model="userfullname" size="50" placeholder="Full name"/>
+    </div>
+	<div class="form-group">
+	<input type="text" ng-model="useremail" size="50" placeholder="Email"/>
+    </div>
+	<div class="form-group">
+	<input type="password" ng-model="password" size="50" placeholder="Password"/>
+	</div>
+	<div class="form-group">
+	<input type="text" ng-model="department" size="50" placeholder="Department"/>
+	</div>
+	<div class="form-group">
+	<input type="text" ng-model="designation" size="50" placeholder="Designtation"/>
+	</div>
+	<div class="form-group">
+	<input type="text" ng-model="permanantAddress" size="50" placeholder="Permanant Address"/>
+	</div>
+	<div class="form-group">
+	<input type="text" ng-model="presentAddress" size="50" placeholder="Present Address"/>
+	</div>
+	<input type="submit" value="Add New"/>
 </form>
-
-<br>
+</div>
+<br> 
 <!--
 <button ng-click="reloadUser()">Reload user</button>
 -->
-
+<div ng-show="showUser">
 <h2>User List</h2>
 <div >
 	<table style="width:100%">
@@ -31,23 +67,28 @@
     <td>Name</td> 
 	<td>Full name</td> 
 	<td>Email</td>
+	<td>Designtation</td>
 	<td></td>
   </tr>
   <tr ng-repeat="x in userList">
      <td><span ng-bind="x.userName"></span></td>
 	 <td><span ng-bind="x.userFullName"></span></td>
 	 <td><span ng-bind="x.userEmail"></span></td>
-	 <td><a href="#" ng-click="handleClick(x.userTodolist, x.userId)">TodoList</a></td>
+	 <td><span ng-bind="x.userDesignation"></span></td>
+	 <td><a href="#" ng-show="x.userTodolist" ng-click="handleClick(x.userTodolist, x.userId)">TodoList</a></td>
   </tr>
  </table>
    
 </div>
-
+</div>
+<br/>
+<br/>
+<a href="/meetings.html">Meetings</a>
 </div>
 
 <script src="app.js"></script>
 <script src="session.js"></script>
 <script src="controllers/user.js"></script>
-
+<script src="styles/bootstrap/js/bootstrap.min.js"</script>
 </body>
 </html>

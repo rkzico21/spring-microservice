@@ -1,37 +1,61 @@
 <!DOCTYPE html>
 <html>
+<head>
 <script src="angular.min.js"></script>
+
+<script src="scripts/jwt-decode-master/build/jwt-decode.js"></script>
 <script src="angular-cookies.min.js"></script>
-<body ng-app="demoapp" >
+<script src="angular-cookies.min.js"></script>
+<script src="angular-animate.js"></script>
+<script src="ui-bootstrap-tpls-2.5.0.js"></script>
+<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
+   
+</head>
+<body ng-app="demoapp">
+
 
 <div id="logout" ng-controller="sessionCtrl"> 
 		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
 </div>
-
-<div ng-controller="todoCtrl"> 
-<h2>Todo List</h2>
-
+<div ng-controller="todoCtrl" class="container">
+<!--<div ng-show=isAdmin>
+</div>-->
+<ul>
+ <li>
+  <a href="#" ng-click="displayForm(true)" ng-show="showList" >Add</a>
+  <a href="#" ng-click="displayForm(false)" ng-show="showForm">TodoList</a>
+ </li>	
+<ul>
+<div ng-show="showForm">
 <form ng-submit="todoAdd()">
-    <input type="text" ng-model="todoInput" size="50" placeholder="Add New">
-    <input type="submit" value="Add New">
+	<div class="form-group">
+    <input type="text" ng-model="todoItemTitle" size="50" placeholder="Title">
+	</div>
+	
+	<input type="submit" value="Add New"/>
 </form>
-
-<br>
-
+</div>
+<br> 
+<!--
+<button ng-click="reloadUser()">Reload user</button>
+-->
+<div ng-show="showList">
+<h2>Todo List</h2>
 <div ng-repeat="x in todoList">
     <div id="{{x.url}}"><span ng-bind="x.todoText"></span> 
 		<span><a href="#" ng-click="deletelist(x.url)">Delete</a></span>
 	</div>
 </div>
-
-<p><button ng-click="remove()">Remove marked</button></p>
-<p><a href="/user.html">Users</a>
-
 </div>
+<br/>
+<br/>
+<p><a href="/user.html">Users</a>
+<a href="/meetings.html">Meetings</a>
+</div>
+
 <script src="app.js"></script>
 <script src="session.js"></script>
 <script src="controllers/todolist.js"></script>
-
-
+<script src="styles/bootstrap/js/bootstrap.min.js"</script>
 </body>
 </html>

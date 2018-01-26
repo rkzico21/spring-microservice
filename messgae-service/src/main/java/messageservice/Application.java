@@ -1,5 +1,7 @@
 package messageservice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -13,11 +15,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import messageservice.Services.DummyMailService;
+import messageservice.Services.MailService;
+
 @SpringBootApplication
 public class Application {
-    
+	
+	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
-	final static String queueName = "spring-boot";
+	final static String queueName = "email-queue";
 
     @Bean
     Queue queue() {
@@ -26,7 +32,7 @@ public class Application {
 
     @Bean
     TopicExchange exchange() {
-        return new TopicExchange("spring-boot-exchange");
+        return new TopicExchange("email-exchange");
     }
 
     @Bean
@@ -54,9 +60,16 @@ public class Application {
     MessageListenerAdapter listenerAdapter(Receiver receiver) {
         return new MessageListenerAdapter(receiver, "onMessage");
     }
+    
+    @Bean
+    MailService mailService() {
+        return new DummyMailService();
+    }
+    
 
     
     public static void main(String[] args) {
+    	 logger.info("Starting message service...");
          SpringApplication.run(Application.class, args);
      }
  }

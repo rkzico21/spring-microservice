@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -85,26 +86,14 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		OAuth2AccessToken token;
 		try {
 			
-			token = generateOauth2AccessToken(authentication.getName(), "");
+			//token = generateOauth2AccessToken(authentication.getName(), "");
+			token = generateOauth2AccessToken(authentication);
 			String jwtResponse = objectMapper.writeValueAsString( token );
 			response.setContentType("application/json");
 			response.setHeader("Access-Control-Allow-Credentials", "true");
 			
 			
 			//NOTE: Use cookie if necessary. 
-					
-			/*Cookie accessTokenCookie = new Cookie("access_token", token.getValue());
-			accessTokenCookie.setHttpOnly(true);
-			accessTokenCookie.setPath("/");
-			accessTokenCookie.setMaxAge(token.getExpiresIn());;
-			
-			Cookie refreshTokenCookie = new Cookie("refresh_token", token.getRefreshToken().getValue());
-			refreshTokenCookie.setHttpOnly(true);
-			refreshTokenCookie.setPath("/");
-			refreshTokenCookie.setMaxAge(REFRESH_EXPIRES_IN);;
-			
-			response.addCookie(accessTokenCookie);
-			response.addCookie(refreshTokenCookie);*/
 			response.getWriter().write( jwtResponse );
 			
 		} catch (Exception e) {
@@ -113,31 +102,33 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		}
 	}
 	
-	private OAuth2AccessToken generateOauth2AccessToken(String userName, String password) throws Exception {
+	private OAuth2AccessToken generateOauth2AccessToken(Authentication authentication) throws Exception {
+		
+	//private OAuth2AccessToken generateOauth2AccessToken(String userName, String password) throws Exception {
 		HashMap<String, String> requestParameters = new HashMap<String, String>();
 		requestParameters.put("scope", "read");
-		requestParameters.put("username", "user");
-		requestParameters.put("client_id", "gateway");
+		requestParameters.put("username", authentication.getName());
+		requestParameters.put("client_id", "apiClient");
 		requestParameters.put("grant", "password");
 		    
 		    
 		   
-		    Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+			Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		    
 		    Set<String> responseType = new HashSet<String>();
 		    responseType.add("password");
 
 		    Set<String> scopes = new HashSet<String>();
-		    scopes.add("read");
-		    scopes.add("write");
+		    //scopes.add("read");
+		    //scopes.add("write");
 
 		    OAuth2Request authorizationRequest = new OAuth2Request(
-		    		requestParameters, "gateway",
+		    		requestParameters, "apiClient",
 		            authorities, true,scopes, null, "",
 		            responseType, null);
 
 		    
-		    User user = userRepository.findUserByName(userName);
+		    User user = userRepository.findUserByName(authentication.getName());
 		    UserPrincipal userPrincipal = new UserPrincipal(user);
 	        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
 
@@ -146,28 +137,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		    
 
 		    OAuth2AccessToken accessToken = defaultTokenServices.createAccessToken(authenticationRequest);
-		    
-		    return accessToken;
+		   return accessToken;
 	}
-	
-	
-    
-	public JwtAccessTokenConverter accessTokenConverter() {
-		KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(
-                new ClassPathResource("jwt.jks"), "mySecretKey".toCharArray());
-		JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("jwt"));
-        return converter;
-    }
-	
-	
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
-    }
-   
-    public ClientDetailsServiceConfigurer clientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> clientDetailsServiceBuilder) throws Exception {
-    	
-    	ClientDetailsServiceConfigurer clientDetailsServiceConfigurer = new ClientDetailsServiceConfigurer(clientDetailsServiceBuilder);
-    	return clientDetailsServiceConfigurer;
-    }
-  }
+}

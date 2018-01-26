@@ -12,7 +12,7 @@ import todolistservice.TodoListResourceProcessor;
 import todolistservice.User;
 import todolistservice.UserServiceClient;
 import todolistservice.entities.*;
-import todolistservice.exceptions.TodolistNotFoundException;
+import todolistservice.exceptions.TodolistItemNotFoundException;
 import todolistservice.repositories.TodolistService;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,50 +50,50 @@ public class TodoListController {
 	@Autowired
     TodoListResourceProcessor resourceProcessor;
 	
-	@RequestMapping(method = RequestMethod.GET, value="/todolist")
-	public Resources<Resource<TodoList>> index(@RequestParam(value = "userid", required = false) Long userId) throws Throwable {
+	@RequestMapping(method = RequestMethod.GET, value="/todolist/item")
+	public Resources<Resource<TodoListItem>> index(@RequestParam(value = "userid", required = false) Long userId) throws Throwable {
         
-	    VerifyUser(userId);
+	    //VerifyUser(userId);
 	   
-    	Iterable<TodoList> todoListCollection = service.findByUserId(userId);
-    	List<Resource<TodoList>> todoListResources = new ArrayList<>();
+    	Iterable<TodoListItem> items = service.findByUserId(userId);
+    	List<Resource<TodoListItem>> resources = new ArrayList<>();
     	
-    	for( TodoList todoList : todoListCollection ) {
-    		Resource<TodoList> todolistResource = new Resource<TodoList>(todoList);
+    	for( TodoListItem item : items ) {
+    		Resource<TodoListItem> resource = new Resource<TodoListItem>(item);
     		
-    		todoListResources.add(resourceProcessor.process(todolistResource));
+    		resources.add(resourceProcessor.process(resource));
         }
     	
-       
-    	
-		return new Resources<>(todoListResources);
+    	return new Resources<>(resources);
     }
-    
-    @RequestMapping(method = RequestMethod.GET, value="/todolist/{id}")
-    public Resource<TodoList> getTodoList(@PathVariable(value="id") Long id) {
-    	TodoList todoList = service.findOne(id);
+	
+	@RequestMapping(method = RequestMethod.GET, value="/todolist/item/{id}")
+    public Resource<TodoListItem> getItem(@PathVariable(value="id") Long id) throws Throwable {
     	
-    	if(todoList == null)
-    		throw new TodolistNotFoundException(id);
+    	TodoListItem item = service.findOne(id); 
+    	if(item == null) {
+    		 throw new TodolistItemNotFoundException(id);
+    	}
     	
-    	return resourceProcessor.process(new Resource<TodoList>(todoList));
+    	return resourceProcessor.process(new Resource<TodoListItem>(item));
     }
+	
     
-    @RequestMapping(method = RequestMethod.POST, value="/todolist")
-    public Resource<TodoList> createTodoList(@RequestBody TodoList entity, HttpServletResponse response) throws Throwable {
-    	VerifyUser(entity.getUserId());
-    	TodoList todoList = service.add(entity); 
+	@RequestMapping(method = RequestMethod.POST, value="/todolist/item")
+    public Resource<TodoListItem> addItem(@RequestBody TodoListItem entity, HttpServletResponse response) throws Throwable {
+    	//VerifyUser(entity.getUserId());
+    	TodoListItem todoList = service.add(entity); 
     	
-    	Resource<TodoList> resource = resourceProcessor.process(new Resource<TodoList>(todoList));
+    	Resource<TodoListItem> resource = resourceProcessor.process(new Resource<TodoListItem>(todoList));
     	response.setStatus(HttpServletResponse.SC_CREATED);
     	response.addHeader("Location", resource.getLink("self").getHref());
     	return resource;
     }
     
     
-    @RequestMapping(method = RequestMethod.DELETE, value="/todolist/{id}")
-    public void removeTodoList(@PathVariable(value="id") Long id) {
-    	logger.info("deleting todo list with id: %d", id);
+    @RequestMapping(method = RequestMethod.DELETE, value="/todolist/item/{id}")
+    public void removeItem(@PathVariable(value="id") Long id) {
+    	logger.info("deleting item with id: %d", id);
     	service.delete(id);
     }
     

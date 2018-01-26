@@ -20,6 +20,7 @@ public class AuthenticationFailureHandler extends SimpleUrlAuthenticationFailure
     	
     	super.onAuthenticationFailure(request, response, exception);
         
-        exception.printStackTrace();
+    	//write log
+        //exception.printStackTrace();
     }
 }
