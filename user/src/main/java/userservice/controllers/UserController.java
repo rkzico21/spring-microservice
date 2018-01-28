@@ -66,10 +66,26 @@ public class UserController {
     	if (user == null) 
     	{
     		logger.warn(String.format("No user found with id: %d", id));
-    		throw new UserNotFoundException(id);
+    		throw new UserNotFoundException("id", id.toString());
         }
     	
     	logger.debug(String.format("Finding user with id: %d, User:%s", id, user));
+    	return userResourceProcessor.process(new Resource<User>(user));
+    }
+   
+   @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
+   @RequestMapping(method = RequestMethod.GET, params = "name")
+   public Resource<User> getUser(@RequestParam(value = "name", required = false) String name) throws UserNotFoundException{
+        logger.info(String.format("Finding user with name: %s", name));
+    	
+    	User user = service.findByName(name);
+    	if (user == null) 
+    	{
+    		logger.warn(String.format("No user found with name: %s", name));
+    		throw new UserNotFoundException("name", name);
+        }
+    	
+    	logger.debug(String.format("Finding user with name: %s, User:%s", name, user));
     	return userResourceProcessor.process(new Resource<User>(user));
     }
     
@@ -88,9 +104,9 @@ public class UserController {
     @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
     @RequestMapping(method = RequestMethod.GET, value= "/search")
     @ResponseStatus(HttpStatus.OK)
-    public Resources<Resource<User>> searchUser(@RequestParam(value = "fullName", required = false) String query) {
+    public Resources<Resource<User>> searchUser(@RequestParam(value = "fullname", required = false) String query) {
     	
-    	logger.info("Get all the users");
+    	logger.info(String.format("Get users with parameter %s", query));
     	
     	Iterable<User> users = service.search(query);
      	List<Resource<User>> userResources = new ArrayList<>();

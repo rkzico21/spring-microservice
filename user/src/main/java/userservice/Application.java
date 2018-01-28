@@ -89,16 +89,30 @@ public class Application {
     		RoleEntity roleUserRead= new RoleEntity(5L, "user_read");
     		roleRepository.save(roleUserRead);
     		
+    		RoleEntity roleTodoListRead = new RoleEntity(6L, "todolist_read");
+    		roleRepository.save(roleTodoListRead);
+    		
+    		RoleEntity roleTodoListItemCreate = new RoleEntity(7L, "todolistItem_create");
+    		roleRepository.save(roleTodoListItemCreate);
+    		
+    		RoleEntity roleTodoListItemDelete = new RoleEntity(8L, "todolistItem_delete");
+    		roleRepository.save(roleTodoListItemDelete);
     		
     		user = new UserEntity(2L, "user", "user", "user@example.com", passwordEncoder.encode("user"));
     		user.getRoles().add(roleUserRead);
+    		user.getRoles().add(roleTodoListRead);
+    		user.getRoles().add(roleTodoListItemCreate);
+    		user.getRoles().add(roleTodoListItemDelete);
     		repository.save(user);
-    	//}
+    	
+    		
+    	
     		
     		user = new UserEntity(3L, "user1", "user1", "user@example.com", passwordEncoder.encode("user1"));
     		user.getRoles().add(roleUserList);
     		user.getRoles().add(roleUserCreate);
     		user.getRoles().add(roleUserUpdate);
+    		user.getRoles().add(roleTodoListRead);
     		repository.save(user);
     }
  }

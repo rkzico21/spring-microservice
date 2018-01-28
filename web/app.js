@@ -1,10 +1,23 @@
 'use strict';
 
-var app = angular.module('demoapp', ['ngCookies','ngAnimate', 'ui.bootstrap']);
+var app = angular.module('demoapp', ['ngRoute', 'ngCookies','ngAnimate', 'ui.bootstrap']);
 
-app.config(function ($provide, $httpProvider) {
+app.directive('a', function() {
+    return {
+        restrict: 'E',
+        link: function(scope, elem, attrs) {
+            if(attrs.ngClick || attrs.href === '' || attrs.href === '#'){
+                elem.on('click', function(e){
+                    e.preventDefault();
+                });
+            }
+        }
+   };
+});
+
+app.config(function ($provide, $httpProvider, $routeProvider) {
   // Intercept http calls.
-  $provide.factory('interceptor', function ($q,  $injector,$window, $location, $cookies) {
+  $provide.factory('interceptor', function ($q, $injector, $window, $location, $cookies) {
     return {
       // On request success
       request: function (config) {
@@ -78,20 +91,19 @@ app.config(function ($provide, $httpProvider) {
 							// called asynchronously if an error occurs
 							// or server returns response with an error status.
 							deferred.reject();
+							$location.path( "/login" );
 							
-							if($window.location.pathname != '/login.html')
-							{
-								$window.location.href = '/login.html';
-							}
 					}); 
 					
 					return deferred.promise;
 		    }
 			
-			if($window.location.pathname != '/login.html')
+			
+			$location.path('/login');
+			/*if($window.location.pathname != '/login.html')
 			{
 				$window.location.href = '/login.html';
-			}
+			}*/
 		}
 		return rejection || $q.when(rejection);
       }
@@ -105,5 +117,55 @@ app.config(function ($provide, $httpProvider) {
   
   //$httpProvider.defaults.useXDomain = true;
   //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+	
+  $routeProvider.when("/user", {
+        controller: "userCtrl",
+        templateUrl: "/user.html"
+    });
 
+    $routeProvider.when("/todolist/", {
+        controller: "todoCtrl",
+        templateUrl: "todolist.html"
+    });
+
+    $routeProvider.when("/meetings", {
+        controller: "meetingsCtrl",
+        templateUrl: "meetings.html"
+    });
+	
+	$routeProvider.when("/meeting", {
+        controller: "meetingCtrl",
+        templateUrl: "meeting.html"
+    });
+	
+	$routeProvider.when("/login", {
+        controller: "sessionCtrl",
+        templateUrl: "login.html"
+    });
+	
+	$routeProvider.when("/report", {
+        controller: "reportCtrl",
+        templateUrl: "report.html"
+    });
+
+    $routeProvider.otherwise({ redirectTo: "/todolist" });	
+	
 });
+
+
+app.run(['$rootScope', '$location', '$cookies', function ($rootScope, $location, $cookies) {
+    $rootScope.$on('$routeChangeStart', function (event, next, current) {
+          
+	
+        if (!($cookies.get('access_token'))) {
+            console.log('DENY');
+            //event.preventDefault();
+			// not going to #login, we should redirect now
+			$location.path( "/login" );
+		}
+        else {
+            //console.log('ALLOW');
+            //$location.path('/todolist');
+        }
+    });
+}]);

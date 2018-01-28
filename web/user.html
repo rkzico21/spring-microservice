@@ -1,31 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<script src="angular.min.js"></script>
-
-<script src="scripts/jwt-decode-master/build/jwt-decode.js"></script>
-<script src="angular-cookies.min.js"></script>
-<script src="angular-cookies.min.js"></script>
-<script src="angular-animate.js"></script>
-<script src="ui-bootstrap-tpls-2.5.0.js"></script>
-<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
-   
-</head>
-<body ng-app="demoapp">
-
-
-<div id="logout" ng-controller="sessionCtrl"> 
-		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
-</div>
-<div ng-controller="userCtrl" class="container">
-<!--<div ng-show=isAdmin>
-</div>-->
-<ul>
- <li>
+<div ng-controller="userCtrl" ng-init="init()">
+<div>
   <a href="#" ng-click="displayForm(true)" ng-show="showUser" >Add User</a>
   <a href="#" ng-click="displayForm(false)" ng-show="showForm">Users</a>
- </li>	
-<ul>
+</div>
+<br/>
 <div ng-show="showForm">
 <form ng-submit="userAdd()">
 	<div class="form-group">
@@ -55,10 +33,6 @@
 	<input type="submit" value="Add New"/>
 </form>
 </div>
-<br> 
-<!--
-<button ng-click="reloadUser()">Reload user</button>
--->
 <div ng-show="showUser">
 <h2>User List</h2>
 <div >
@@ -81,14 +55,4 @@
    
 </div>
 </div>
-<br/>
-<br/>
-<a href="/meetings.html">Meetings</a>
-</div>
 
-<script src="app.js"></script>
-<script src="session.js"></script>
-<script src="controllers/user.js"></script>
-<script src="styles/bootstrap/js/bootstrap.min.js"</script>
-</body>
-</html>

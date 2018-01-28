@@ -69,6 +69,12 @@ public class UserServiceImpl implements UserService{
 		UserEntity entity = repository.findOne(id);
 		return modelMapper.map(entity, User.class);
 	}
+	
+	@Override
+	public User findByName(String name) {
+		UserEntity entity = repository.findUserByName(name);
+		return modelMapper.map(entity, User.class);
+	}
 
 	@Override
 	public Iterable<User> search(String query) {

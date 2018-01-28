@@ -27,8 +27,8 @@ public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapt
 			.csrf().disable()
             .authorizeRequests()
             .antMatchers("/**")
-            //.authenticated(); //remove comment to enable security
-            .permitAll();
+            .authenticated(); //remove comment to enable security
+            //.permitAll();
 	            
             // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
         

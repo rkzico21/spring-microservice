@@ -67,9 +67,11 @@ public class RefreshTokenEndpoint {
     	String grantType = "refresh_token";
     	String clientId = "apiClient";
     	String refreshTokenValue = refreshToken;
+    	
     	OAuth2RefreshToken refreshToken1 = tokenStore.readRefreshToken(refreshTokenValue);
 		OAuth2Authentication autehntication = tokenStore.readAuthenticationForRefreshToken(refreshToken1);
-		 
+		OAuth2AccessToken token = null;
+		try{
     	Set<String> scopes = new HashSet<String>();
 	   
     	HashMap<String, String> requestParameters = new HashMap<String, String>();
@@ -78,12 +80,16 @@ public class RefreshTokenEndpoint {
 		requestParameters.put("client_id", clientId);
 		requestParameters.put("grant", "password");
 	   
-		
-		
-		
-    	TokenRequest tokenRequest = new TokenRequest(requestParameters, clientId, scopes, grantType);
+		TokenRequest tokenRequest = new TokenRequest(requestParameters, clientId, scopes, grantType);
     	
-    	OAuth2AccessToken token = defaultTokenServices.refreshAccessToken(refreshTokenValue, tokenRequest);
+    	token = defaultTokenServices.refreshAccessToken(refreshTokenValue, tokenRequest);
+    	
+		}
+		catch(Exception ex){
+			//ex.printStackTrace();
+			//Todo: write log
+			
+		}
     	return token;
     	
     }

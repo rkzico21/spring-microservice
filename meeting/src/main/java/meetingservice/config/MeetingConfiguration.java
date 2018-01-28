@@ -19,8 +19,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableResourceServer
 public class MeetingConfiguration extends ResourceServerConfigurerAdapter {
 	
-	 @Autowired
-	 TokenStore tokenStore;
+	@Autowired
+	TokenStore tokenStore;
 
 	@Autowired
 	JwtAccessTokenConverter tokenConverter;

@@ -1,21 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
- <meta charset="UTF-8">
-<script src="angular.min.js"></script>
-<!--<script src="spring-security-csrf-token-interceptor.js"></script> -->
-<script src="angular-cookies.min.js"></script>
-<script src="angular-animate.js"></script>
-<script src="ui-bootstrap-tpls-2.5.0.js"></script>
-<link rel="stylesheet" href="styles\bootstrap\css\bootstrap.css"/>
-</head>
-<body ng-app="demoapp">
+<div ng-controller="meetingsCtrl" ng-init="init()">
+<div>
+  <a href="#" ng-click="displayForm(true)" ng-show="showList" >Add</a>
+  <a href="#" ng-click="displayForm(false)" ng-show="showForm">Meetings</a>
+<div>
 
-
-<div id="logout" ng-controller="sessionCtrl"> 
-		<span><a href="#" ng-click="signout(x.url)">Sign out</a></span>
-</div>
-<div ng-controller="meetingsCtrl" class="container">
+<div ng-show="showForm">
 <h2>Meeting Form</h2>
 
 <form ng-submit="createMeeting()">
@@ -38,11 +27,12 @@
 	
     <input type="submit" value="Create"/>
 </form>
-
+</div>
 <br>
 
+<div ng-show="showList">
 <h2>Meetings</h2>
-<div >
+<div>
 	<table style="width:100%">
   <tr>
     <td>Subject</td>
@@ -56,15 +46,6 @@
  </table>
    
 </div>
-<p>
-<a href="/user.html">User</a>
-
+</div>
 </div>
 
-<script src="app.js"></script>
-<script src="session.js"></script>
-<script src="controllers/file.js"></script>
-<script src="controllers/meetings.js"></script>
-<script src="styles/bootstrap/js/bootstrap.min.js"</script>
-</body>
-</html>
