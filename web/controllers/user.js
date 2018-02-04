@@ -1,4 +1,4 @@
-app.controller('userCtrl', ['$scope', '$http', '$sce', '$window', '$location', '$cookies', 'apiService', function($scope, $http, $sce, $window, $location, $cookies, apiService) {
+app.controller('userCtrl', ['$scope', '$http', '$sce', '$window', '$location', '$cookies',  function($scope, $http, $sce, $window, $location, $cookies) {
     $scope.userApi;
 	
 	$scope.init = function() {

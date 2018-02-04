@@ -43,7 +43,6 @@ app.controller('todoCtrl', function($scope, $http, $sce, $window, $cookies, $rou
             userId: userId,
         };
 
-        //var url = "http://localhost:8888/api/todolist";
         var url = $window.localStorage["todolistUri"];
         $sce.trustAsResourceUrl(url);
         $http.post(url, dataObj)

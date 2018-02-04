@@ -24,15 +24,28 @@ app.controller('sessionCtrl', function($rootScope, $scope, $http, $sce, $window,
 			 
 			 $rootScope.$broadcast('loginEvent', {data: "login"});  
 			 
-			 var url = "http://localhost:8888/api/user?name="+ $scope.username;
-			 loadUser(url);
+			 loadUserByName($scope.username);
 			 
 			 
 		});
    };
    
-    loadUser = function(url) {
-		$http.get(url)
+    loadUserByName = function(name) {
+		$http.get("http://localhost:8888/api").then(function(response){
+			$http.get(response.data._links.user_service.href).then(function(response){
+			    userApi = response.data;
+				var url = userApi._links.userByName.href
+				url = url.replace("{?name}", "?name="+name);
+				loadUser(url);
+			})	
+		});
+		
+		
+	};
+	
+	
+	loadUser = function(url) {
+	    $http.get(url)
                 .then(function(response) {
 					var user = response.data;
 					$rootScope.user = user;

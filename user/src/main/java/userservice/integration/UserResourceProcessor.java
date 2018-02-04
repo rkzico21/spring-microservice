@@ -46,7 +46,8 @@ public class UserResourceProcessor implements ResourceProcessor<Resource<User>> 
 		
 		String host = this.request.get().getHeader(X_FORWARDED_HOST);
 		String prefix = this.request.get().getHeader(X_FORWARDED_PREFIX);
-		
+		if(prefix != null)
+		   prefix = prefix.replace("user", "todolist");
 		
 		Link link = this.todolistIntegration.getTodolistsByUserLink(parameters, host, prefix);
 		if (link != null) {

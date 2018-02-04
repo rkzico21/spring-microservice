@@ -31,9 +31,9 @@ zuul:
       #strip-prefix: false
       sensitiveHeaders:
     todolist:
-      path: /todolist/**
+      path: /todolistservice/**
       url: http://localhost:8090
-      strip-prefix: false
+      #strip-prefix: false
       sensitiveHeaders:
     todolistitem:
       url: http://localhost:8090
@@ -56,7 +56,7 @@ zuul:
       sensitiveHeaders:
       strip-prefix: false
   ignored-headers: Access-Control-Allow-Origin
-
+  addProxyHeaders: true
 # based on https://gist.github.com/spencergibb/80a134b4738c78ca64e4d0c77214fcb6
 meeting:
   ribbon:

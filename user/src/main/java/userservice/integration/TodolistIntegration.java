@@ -69,6 +69,8 @@ public class TodolistIntegration {
  		    if (host!=null && instance != null) {
 			   href = reconstructURI(host, prefix, href);
 		    }
+ 		    
+ 		  
  		
 		    log.info("Found todolist link pointing to {}.", href);
 

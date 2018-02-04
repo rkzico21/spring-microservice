@@ -14,13 +14,18 @@ import todolistservice.UserServiceClient;
 import todolistservice.entities.*;
 import todolistservice.exceptions.TodolistItemNotFoundException;
 import todolistservice.repositories.TodolistService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.RepositoryLinksResource;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +38,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-public class TodoListController {
+@ExposesResourceFor(TodoListItem.class)
+public class TodoListController  implements ResourceProcessor<RepositoryLinksResource> {
     
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -53,7 +59,7 @@ public class TodoListController {
 	@RequestMapping(method = RequestMethod.GET, value="/todolist/item")
 	public Resources<Resource<TodoListItem>> index(@RequestParam(value = "userid", required = false) Long userId) throws Throwable {
         
-	    //VerifyUser(userId);
+	    VerifyUser(userId);
 	   
     	Iterable<TodoListItem> items = service.findByUserId(userId);
     	List<Resource<TodoListItem>> resources = new ArrayList<>();
@@ -132,6 +138,19 @@ public class TodoListController {
         
         return token;
     }
+
+	@Override
+	public RepositoryLinksResource process(RepositoryLinksResource arg0) {
+		try {
+			arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(TodoListController.class).index(null)).withRel("todolist"));
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage());
+		}
+		
+		
+		return arg0;
+	}
     
 }
 
