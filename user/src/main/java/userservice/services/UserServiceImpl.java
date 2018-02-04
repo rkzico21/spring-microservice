@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService{
 		UserEntity userEntity = modelMapper.map(user, UserEntity.class);
 		userEntity.setPassword(encryptedPassword);
 	    
-		RoleEntity role = roleRepository.findRoleByName("user");
+		RoleEntity role = roleRepository.findRoleByName("user_update");
 	    userEntity.getRoles().add(role);
 		UserEntity entity = repository.save(userEntity);
 		

@@ -13,6 +13,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import userservice.entities.RoleEntity;
 import userservice.entities.UserEntity;
@@ -26,6 +33,7 @@ import org.modelmapper.ModelMapper;
 @EntityScan(basePackages = {"userservice.entities"})
 @EnableJpaRepositories(basePackages = { "userservice.repositories" })
 @ComponentScan(basePackages = {"userservice","userservice.entities", "userservice.repositories", "userservice.controllers", "userservice.config", "userservice.integration", "userservice.exceptions"})
+@EnableSwagger2
 public class Application {
     
 	@Autowired
@@ -57,6 +65,15 @@ public class Application {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+    
+   @Bean
+    public Docket api() { 
+        return new Docket(DocumentationType.SWAGGER_2)  
+          .select() 
+          .apis(RequestHandlerSelectors.basePackage("userservice.controllers"))
+          .paths(PathSelectors.any())                          
+          .build();                                           
     }
   
     
@@ -100,6 +117,7 @@ public class Application {
     		
     		user = new UserEntity(2L, "user", "user", "user@example.com", passwordEncoder.encode("user"));
     		user.getRoles().add(roleUserRead);
+    		
     		user.getRoles().add(roleTodoListRead);
     		user.getRoles().add(roleTodoListItemCreate);
     		user.getRoles().add(roleTodoListItemDelete);

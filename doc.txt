@@ -19,8 +19,16 @@ Dependencies
 	
   
 3. Postgresql: 
-    "user" and "todolist" services are dependent on postgresql. install postgresql and create two databases "userdb" and "todolistdb"
-	 
+    This sample uses postgres database as backend for its services. There are 
+	separate database for each services. Create following databases before 
+	running the services. The schema will be generated automatically
+	once the service is running.
+	
+	1. userdb
+	2. todolistdb.
+	3. meetingdb
+	
+	
 	Make sure following properties is set to true in application.properties file
 	 
 	spring.jpa.hibernate.ddl-auto=create
@@ -52,7 +60,7 @@ Dependencies
 
 
 
-Running the service:
+Running the service(s):
   You have to first start the registry service. Then you have to run other services.
   
   Example usage:
@@ -67,3 +75,9 @@ Running the service:
 	delete http://localhost:8888/api/todolist/1 (delete todolist with id 1)
 	
     
+Running the sample web client:
+    To start the test client application run "mongoose-free-6.5.exe". From
+	the index click home.html and enter the following credential.
+	
+	"user": admin
+	"password": admin

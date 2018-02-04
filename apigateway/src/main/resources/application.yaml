@@ -3,6 +3,8 @@ app:
   user_cookie: c_user
 
 spring:
+   jackson:
+      default-property-inclusion: non_null
    http:
        multipart:
          max-file-size: -1
@@ -23,9 +25,10 @@ zuul:
       strip-prefix: true
       sensitive-headers:
     user:
-      path: /user/**
-      url: http://localhost:8080
-      strip-prefix: false
+      path: /userservice/**
+      serviceId: userservice
+      #url: http://localhost:8080
+      #strip-prefix: false
       sensitiveHeaders:
     todolist:
       path: /todolist/**

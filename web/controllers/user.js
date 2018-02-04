@@ -1,12 +1,23 @@
-app.controller('userCtrl', function($scope, $http, $sce, $window, $location, $cookies) {
-    $scope.init = function() {
+app.controller('userCtrl', ['$scope', '$http', '$sce', '$window', '$location', '$cookies', 'apiService', function($scope, $http, $sce, $window, $location, $cookies, apiService) {
+    $scope.userApi;
+	
+	$scope.init = function() {
         $scope.userList = [];
         $scope.isAdmin = false;
         $scope.showForm = false;
         $scope.showUser = false;
-
-        var url = "http://localhost:8888/api/user";
-        var token = $cookies.get('access_token')
+		
+		$http.get("http://localhost:8888/api").then(function(response){
+			$http.get(response.data._links.user_service.href).then(function(response){
+			    userApi = response.data;
+				loadUser(userApi._links.users.href);
+			})	
+		});
+				
+	};
+	
+	loadUser = function(url) {
+		var token = $cookies.get('access_token')
         if (token) {
             var decoded = jwt_decode(token);
             if (decoded.authorities) {
@@ -27,7 +38,8 @@ app.controller('userCtrl', function($scope, $http, $sce, $window, $location, $co
                 });
             }
         });
-    };
+	
+	}
 
     clearFields = function() {
         $scope.username = "";
@@ -77,7 +89,7 @@ app.controller('userCtrl', function($scope, $http, $sce, $window, $location, $co
 
         };
         console.log(dataObj);
-        var url = "http://localhost:8888/api/user";
+        var url = userApi._links.users.href;
 
         $http.post(url, dataObj)
             .then(function(response) {
@@ -93,9 +105,7 @@ app.controller('userCtrl', function($scope, $http, $sce, $window, $location, $co
 
 
     $scope.handleClick = function(todolistUri, userId) {
-        //$window.localStorage['todolistUri'] = todolistUri;
-        //$window.localStorage['userId'] = userId;
-		$location.path("/todolist").search('user', userId).search('uri', todolistUri);
+       $location.path("/todolist").search('user', userId).search('uri', todolistUri);
     };
 
-});
+}]);

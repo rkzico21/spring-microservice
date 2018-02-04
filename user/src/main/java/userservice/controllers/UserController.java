@@ -8,8 +8,12 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.RepositoryLinksResource;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import userservice.MessageSenderService;
 import userservice.dtos.User;
 import userservice.exceptions.UserNotFoundException;
@@ -28,7 +34,9 @@ import userservice.services.UserService;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+@Api(value = "user", tags = "User API")
+@ExposesResourceFor(User.class)
+public class UserController  implements ResourceProcessor<RepositoryLinksResource>{
     
    private final Logger logger = LoggerFactory.getLogger(this.getClass());
    
@@ -41,7 +49,8 @@ public class UserController {
    @Autowired
    UserResourceProcessor userResourceProcessor;
    
-   @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
+   @ApiOperation(nickname="getUsers", value="getUsers" ,tags = "Get User")
+   //@PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
    @RequestMapping(method = RequestMethod.GET)
    public Resources<Resource<User>> index() {
     
@@ -75,7 +84,7 @@ public class UserController {
    
    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
    @RequestMapping(method = RequestMethod.GET, params = "name")
-   public Resource<User> getUser(@RequestParam(value = "name", required = false) String name) throws UserNotFoundException{
+   public Resource<User> getUserByName(@RequestParam(value = "name", required = false) String name) throws UserNotFoundException{
         logger.info(String.format("Finding user with name: %s", name));
     	
     	User user = service.findByName(name);
@@ -117,6 +126,16 @@ public class UserController {
      	
  		return new Resources<>(userResources); 
     }
+
+	@Override
+	public RepositoryLinksResource process(RepositoryLinksResource arg0) {
+		
+		arg0.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users"));
+		arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUser(null)).withRel("userById"));
+		arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUserByName(null)).withRel("userByName"));
+		
+		return arg0;
+	}
    
     
     /*@RequestMapping(method = RequestMethod.GET, value= "/report")
