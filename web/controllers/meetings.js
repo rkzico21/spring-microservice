@@ -1,17 +1,27 @@
 app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location', 'fileUpload', function($scope, $http, $sce, $window, $location, fileUpload) {
-
+	$scope.meetingApi;
     $scope.init = function() {
 
 		$scope.showForm = false;
         $scope.showList = false;
 		
-        $scope.meetings = [];
+		$scope.meetings = [];
         var url = "http://localhost:8888/api/meeting";
         var trustedurl = $sce.trustAsResourceUrl(url);
-
-        $http.get(url)
+		
+		$http.get("http://localhost:8888/api").then(function(response){
+			$http.get(response.data._links.meeting_service.href).then(function(response){
+			    $scope.meetingApi = response.data;
+				loadMeetings($scope.meetingApi._links.meetings.href);
+			})	
+		})
+    };
+	
+	
+	loadMeetings = function(url) {
+	    $http.get(url)
             .then(function(response) {
-
+				$scope.showList = true;
                 if (response.data._embedded) {
 					$scope.showList = true;
                     angular.forEach(response.data._embedded.meetings, function(meeting) {
@@ -24,7 +34,7 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
                     });
                 }
             });
-    };
+	}
 
     $scope.createMeeting = function() {
         var dataObj = {
@@ -34,7 +44,7 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
             dateTime: $scope.meetingDateTime
         };
 
-        var url = "http://localhost:8888/api/meeting";
+        var url = $scope.meetingApi._links.meetings.href;
 
         $http.post(url, dataObj)
             .then(function(response) {

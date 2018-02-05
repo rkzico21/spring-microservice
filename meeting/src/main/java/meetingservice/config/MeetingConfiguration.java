@@ -31,6 +31,7 @@ public class MeetingConfiguration extends ResourceServerConfigurerAdapter {
 			  .cors().and()
 			  .csrf().disable()
 			  .authorizeRequests()
+			  .antMatchers("/").permitAll()
 			  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			  .antMatchers("/**")
               .authenticated(); //requires for authentication

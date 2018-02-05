@@ -9,8 +9,8 @@ app.controller('userCtrl', ['$scope', '$http', '$sce', '$window', '$location', '
 		
 		$http.get("http://localhost:8888/api").then(function(response){
 			$http.get(response.data._links.user_service.href).then(function(response){
-			    userApi = response.data;
-				loadUser(userApi._links.users.href);
+			    $scope.userApi = response.data;
+				loadUser($scope.userApi._links.users.href);
 			})	
 		});
 				

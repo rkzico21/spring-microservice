@@ -9,8 +9,12 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.RepositoryLinksResource;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +38,8 @@ import meetingservice.services.ParticipantResourceProcessor;
 
 @RestController
 @RequestMapping(value="/meeting")
-public class MeetingController {
+@ExposesResourceFor(Meeting.class)
+public class MeetingController implements ResourceProcessor<RepositoryLinksResource>{
 	
 	 private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -197,4 +202,10 @@ public class MeetingController {
 	    	
 	    	return meeting;
 	    }
+
+		@Override
+		public RepositoryLinksResource process(RepositoryLinksResource arg0) {
+			arg0.add(ControllerLinkBuilder.linkTo(MeetingController.class).withRel("meetings"));
+			return arg0;
+		}
 }

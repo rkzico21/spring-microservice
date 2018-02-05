@@ -35,21 +35,11 @@ zuul:
       url: http://localhost:8090
       #strip-prefix: false
       sensitiveHeaders:
-    todolistitem:
-      url: http://localhost:8090
-      path: /todolistitem/**
-      sensitiveHeaders:
-      strip-prefix: false
-    file:
-      url: http://localhost:8086
-      path: /file/**
-      sensitiveHeaders:
-      strip-prefix: false
     meeting:
       serviceId: meeting
-      path: /meeting/**
+      path: /meetingservice/**
       sensitiveHeaders:
-      strip-prefix: false
+      #strip-prefix: false
     values:
       url: http://localhost:54633 
       path: /values/**
