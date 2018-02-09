@@ -12,6 +12,7 @@ import org.springframework.data.rest.webmvc.RepositoryLinksResource;
 import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import userservice.MessageSenderService;
+import userservice.dtos.SearchResult;
 import userservice.dtos.User;
+import userservice.dtos.UserSearchQuery;
 import userservice.exceptions.UserNotFoundException;
+import static userservice.integration.ResourceWithEmbeddable.*;
+
+import userservice.integration.ResourceWithEmbeddable;
 import userservice.integration.UserResourceProcessor;
+import userservice.integration.UserSearchResourceProcessor;
 import userservice.services.UserService;
 
 @RestController
@@ -41,16 +48,19 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
    private final Logger logger = LoggerFactory.getLogger(this.getClass());
    
    @Autowired
-   UserService service;
+   private UserService service;
    
    @Autowired
-   MessageSenderService messageService;
+   private MessageSenderService messageService;
    
    @Autowired
-   UserResourceProcessor userResourceProcessor;
+   private UserResourceProcessor userResourceProcessor;
+   
+   @Autowired
+   private UserSearchResourceProcessor userSearchResourceProcessor;
    
    @ApiOperation(nickname="getUsers", value="getUsers" ,tags = "Get User")
-   //@PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
+   @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
    @RequestMapping(method = RequestMethod.GET)
    public Resources<Resource<User>> index() {
     
@@ -67,8 +77,8 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
     }
    
    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
-   @RequestMapping(method = RequestMethod.GET, value= "/{id}")
-   public Resource<User> getUser(@PathVariable(value="id") Long id) throws UserNotFoundException{
+   @RequestMapping(method = RequestMethod.GET, value= "/{id:\\d+}")
+   public Resource<User> getUser(@PathVariable("id") Long id) throws UserNotFoundException{
         logger.info(String.format("Finding user with id: %d", id));
     	
     	User user = service.findOne(id);
@@ -110,31 +120,41 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
         return userResourceProcessor.process(new Resource<User>(user));
     }
     
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
+    //@PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
     @RequestMapping(method = RequestMethod.GET, value= "/search")
     @ResponseStatus(HttpStatus.OK)
-    public Resources<Resource<User>> searchUser(@RequestParam(value = "fullname", required = false) String query) {
+    public Resource<SearchResult<User>> searchUser(@RequestParam(value = "fullname", required = false) String fullName,
+    		@RequestParam(value = "department", required = false) String department,
+    		@RequestParam(value = "designation", required = false) String designation,
+    		@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+    		@RequestParam(value = "size", required = false, defaultValue = "20") Integer size) {
     	
-    	logger.info(String.format("Get users with parameter %s", query));
     	
-    	Iterable<User> users = service.search(query);
-     	List<Resource<User>> userResources = new ArrayList<>();
-     	
-     	for( User user : users ) {
-         	userResources.add(userResourceProcessor.process(new Resource<User>(user)));
-         }
-     	
- 		return new Resources<>(userResources); 
+    	UserSearchQuery query = new UserSearchQuery(fullName, department, designation, page, size);
+    	logger.info(String.format("Get users with parameter %s", query.toString()));
+    	SearchResult<User> userSearchResult = service.search(query);
+    	
+    	List<ResourceSupport> userResources= new ArrayList<>();
+	    for( User user : userSearchResult.getResults()) {
+	    	userResources.add(userResourceProcessor.process(new Resource<User>(user)));
+	    }
+    	
+	    ResourceWithEmbeddable<SearchResult<User>> userSearchResultResource = embeddedRes(userSearchResult, resWrapper(userResources, "users"));
+    	
+    	return userSearchResourceProcessor.process(userSearchResultResource);
     }
+    
+    
+   
 
 	@Override
-	public RepositoryLinksResource process(RepositoryLinksResource arg0) {
+	public RepositoryLinksResource process(RepositoryLinksResource repositoryLinksResource) {
 		
-		arg0.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users"));
-		arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUser(null)).withRel("userById"));
-		arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUserByName(null)).withRel("userByName"));
-		
-		return arg0;
+		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users"));
+		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUser(null)).withRel("userById"));
+		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).getUserByName(null)).withRel("userByName"));
+		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).searchUser(null, null, null, null, null)).withRel("search"));
+		return repositoryLinksResource;
 	}
    
     

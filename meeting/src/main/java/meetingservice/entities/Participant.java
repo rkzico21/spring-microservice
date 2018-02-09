@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "participant")
 public class Participant{
@@ -29,6 +31,7 @@ public class Participant{
 	
 	private String organization;
 	
+	@JsonIgnore
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "participants")
 	private Set<Meeting> meetings = new HashSet<Meeting>(0);
 

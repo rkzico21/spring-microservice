@@ -1,6 +1,9 @@
-app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location', 'fileUpload', function($scope, $http, $sce, $window, $location, fileUpload) {
+app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location', 'fileUpload', '$cookies', function($scope, $http, $sce, $window, $location, fileUpload, $cookies) {
 	$scope.meetingApi;
-    $scope.init = function() {
+    
+
+	
+	$scope.init = function() {
 
 		$scope.showForm = false;
         $scope.showList = false;
@@ -22,7 +25,7 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
 	    $http.get(url)
             .then(function(response) {
 				$scope.showList = true;
-                if (response.data._embedded) {
+                if (response.data && response.data._embedded) {
 					$scope.showList = true;
                     angular.forEach(response.data._embedded.meetings, function(meeting) {
                         $scope.meetings.push({
@@ -54,23 +57,25 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
                     subject: meeting.subject,
                     location: meeting.location
                 });
-
-                $window.localStorage['meetingUrl'] = meeting._links.self.href;
-
-                if ($scope.file) {
+				
+				$window.localStorage['meetingUrl'] = meeting._links.self.href;
+				
+				if ($scope.file) {
                     $scope.upload(meeting);
                 } else {
                     //$window.location.href = '/meeting.html';
                 
 					loadMeeting( meeting._links.self.href);
-				}
-
-                $scope.subject = "";
+				};
+				
+				$scope.subject = "";
                 $scope.meetingLocation = "";
 
 
             });
     };
+	
+	
 
     $scope.upload = function(meeting) {
 		var uploadUrl = meeting._links.fileUpload.href;

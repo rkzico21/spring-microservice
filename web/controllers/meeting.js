@@ -74,6 +74,7 @@ app.controller('meetingCtrl', ['$scope', '$http', '$sce', '$window', '$location'
         var dataObj = {
             subject: $scope.subject,
             location: $scope.meetingLocation,
+			description: $scope.meetingDescription
         };
 
 
@@ -106,6 +107,7 @@ app.controller('meetingCtrl', ['$scope', '$http', '$sce', '$window', '$location'
 
     $scope.updateParticipants = function(url) {
         var participants = $scope.participants;
+		console.log(participants);
         $http.put(url, participants)
             .then(function(response) {
                 if (response.data && response.data._embedded)
@@ -149,8 +151,14 @@ app.controller('meetingCtrl', ['$scope', '$http', '$sce', '$window', '$location'
 
 
     $scope.getUsers = function(val) {
-        var uri = "http://localhost:8888/api/user/search";
-        return $http.get(uri, {
+		var userApi =  $window.localStorage["userApi"];
+        if(!userApi)
+		   return;
+
+	    console.log(userApi);
+		var uri =  JSON.parse(userApi)._links.search.href;
+        var arr = uri.split("{");
+		return $http.get(arr[0], {
             params: {
                 fullname: val
             }

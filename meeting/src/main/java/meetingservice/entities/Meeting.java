@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "meeting")
 public class Meeting{
@@ -33,6 +35,7 @@ public class Meeting{
 	
 	private String dateTime;
 	
+	@JsonIgnore
 	@ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
         name = "meeting_participant", 

@@ -34,6 +34,7 @@ app.controller('sessionCtrl', function($rootScope, $scope, $http, $sce, $window,
 		$http.get("http://localhost:8888/api").then(function(response){
 			$http.get(response.data._links.user_service.href).then(function(response){
 			    userApi = response.data;
+				$window.localStorage["userApi"] = JSON.stringify(userApi);
 				var url = userApi._links.userByName.href
 				url = url.replace("{?name}", "?name="+name);
 				loadUser(url);

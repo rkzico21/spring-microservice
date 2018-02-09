@@ -35,7 +35,8 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ApiErrorResponse handleThrowable(final Exception ex) {
-      return new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Internal server error while processing request." , ex.getClass().getCanonicalName());
+    	ex.printStackTrace();
+    	return new ApiErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), "Internal server error while processing request." , ex.getClass().getCanonicalName());
     }
     
     
