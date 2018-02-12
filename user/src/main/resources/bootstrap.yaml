@@ -10,18 +10,3 @@ eureka:
   instance:
     appname: userservice
     
-hystrix:
-  threadpool.default.coreSize: "20"
-  threadpool.default.maxQueueSize: "500000"
-  threadpool.default.keepAliveTimeMinutes: "2"
-  threadpool.default.queueSizeRejectionThreshold: "500000"
-  command:
-    default:
-      fallback.isolation.semaphore.maxConcurrentRequests: "20"
-      execution:
-        timeout:
-          enabled: "false"
-        isolation:
-          strategy: "THREAD"
-          thread:
-            timeoutInMilliseconds: "30000"

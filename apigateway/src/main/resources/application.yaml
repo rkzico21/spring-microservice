@@ -61,4 +61,13 @@ ribbon:
   MaxAutoRetriesNextServer: 2
   eureka:
     enabled: true
+ 
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: "THREAD"
+          thread:
+            timeoutInMilliseconds: "60000"
     
