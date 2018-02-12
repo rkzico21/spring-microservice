@@ -1,4 +1,4 @@
-package userservice.integration;
+package userservice.resourceProcessors;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;

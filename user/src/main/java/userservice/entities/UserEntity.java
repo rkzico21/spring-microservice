@@ -68,50 +68,7 @@ public class UserEntity{
     	this.email = email;
     	this.password = password;
     }
-    
 
-    /*public Long getId() {
-        return Id;
-    }
-    
-
-   
-    public String getName() {
-        return name;
-    }
-    
-    public String getEmail() {
-        return email;
-    }
-    
-    public String getFullName() {
-        return fullName;
-    }
-    
-    public String getPassword() {
-    	return this.password;
-    }
-    
-    public String getDeparment() {
-    	return this.department;
-    }
-    
-    public String getDesignation() {
-    	return this.designation;
-    }
-    
-    public String getPresentAddress() {
-        return presentAddress;
-    }
-
-    public String getPermanantAddress() {
-        return permanantAddress;
-    }
-    
-    public Set<RoleEntity> getRoles() {
-    	return this.roles;
-    }*/
-    
     @Override
     public String toString() {
         return String.format("Id:%d , Name:%s, Full Name:%s, Email:%s, Department:%s, Designation:%s", this.Id, this.name, this.fullName, this.email, this.department, this.designation);

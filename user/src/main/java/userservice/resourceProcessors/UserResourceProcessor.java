@@ -1,4 +1,4 @@
-package userservice.integration;
+package userservice.resourceProcessors;
 
 
 import java.util.HashMap;
@@ -6,17 +6,14 @@ import java.util.Map;
 
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
-
-
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.ResourceProcessor;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.stereotype.Component;
-
 import userservice.controllers.UserController;
 import userservice.dtos.User;
-
+import userservice.integration.TodolistIntegration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 

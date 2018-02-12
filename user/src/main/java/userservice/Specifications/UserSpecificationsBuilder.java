@@ -1,4 +1,4 @@
-package userservice.repositories;
+package userservice.Specifications;
 
 import java.util.List;
 

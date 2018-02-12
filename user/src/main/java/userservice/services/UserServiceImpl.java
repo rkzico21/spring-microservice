@@ -23,7 +23,7 @@ import userservice.dtos.User;
 import userservice.dtos.UserSearchQuery;
 import userservice.repositories.RoleRepository;
 import userservice.repositories.UserRepository;
-import userservice.repositories.UserSpecificationsBuilder;
+import userservice.Specifications.UserSpecificationsBuilder;
 
 
 @Service("userService")

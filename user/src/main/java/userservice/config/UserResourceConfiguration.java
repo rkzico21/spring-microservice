@@ -36,10 +36,9 @@ public class UserResourceConfiguration extends ResourceServerConfigurerAdapter {
 			  .antMatchers("/").permitAll()
 			  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			  .antMatchers("/**")
-              //.authenticated(); //requires for authentication
-              .permitAll();
-			
-	}
+              .authenticated(); //requires for authentication
+			  //.permitall();
+    }
 	
 	
 	 @Bean

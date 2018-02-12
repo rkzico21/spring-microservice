@@ -1,4 +1,4 @@
-package userservice.integration;
+package userservice.resourceProcessors;
 
 import java.util.ArrayList;
 import java.util.HashMap;

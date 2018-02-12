@@ -1,4 +1,4 @@
-package userservice.repositories;
+package userservice.Specifications;
 
 public class SearchCriteria {
     private String key;

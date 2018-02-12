@@ -70,6 +70,7 @@ public class TodoListController  implements ResourceProcessor<RepositoryLinksRes
     		resources.add(resourceProcessor.process(resource));
         }
     	
+    	
     	return new Resources<>(resources);
     }
 	

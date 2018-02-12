@@ -27,16 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import userservice.MessageSenderService;
+import static userservice.resourceProcessors.ResourceWithEmbeddable.*;
+
+import userservice.resourceProcessors.ResourceWithEmbeddable;
+import userservice.resourceProcessors.UserResourceProcessor;
+import userservice.resourceProcessors.UserSearchResourceProcessor;
 import userservice.dtos.SearchResult;
 import userservice.dtos.User;
 import userservice.dtos.UserSearchQuery;
 import userservice.exceptions.UserNotFoundException;
-import static userservice.integration.ResourceWithEmbeddable.*;
 
-import userservice.integration.ResourceWithEmbeddable;
-import userservice.integration.UserResourceProcessor;
-import userservice.integration.UserSearchResourceProcessor;
+
 import userservice.services.UserService;
 
 @RestController
@@ -49,15 +50,13 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
    
    @Autowired
    private UserService service;
-   
-   @Autowired
-   private MessageSenderService messageService;
-   
+  
    @Autowired
    private UserResourceProcessor userResourceProcessor;
    
    @Autowired
    private UserSearchResourceProcessor userSearchResourceProcessor;
+   
    
    @ApiOperation(nickname="getUsers", value="getUsers" ,tags = "Get User")
    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
@@ -67,14 +66,19 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
 	   logger.info("Get all the users");
        Iterable<User> users = service.findAll();
        
-       List<Resource<User>> userResourcest = new ArrayList<>();
+       List<Resource<User>> userResourceList = new ArrayList<>();
     
        for( User user : users ) {
-        	userResourcest.add(userResourceProcessor.process(new Resource<User>(user)));
+    	   userResourceList.add(userResourceProcessor.process(new Resource<User>(user)));
         }
     	
-		return new Resources<>(userResourcest);
+		Resources<Resource<User>> userResources =  new Resources<>(userResourceList);
+		userResources.add(ControllerLinkBuilder.linkTo(UserController.class).withSelfRel());
+		
+		return userResources;
     }
+   
+   
    
    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
    @RequestMapping(method = RequestMethod.GET, value= "/{id:\\d+}")
@@ -92,6 +96,8 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
     	return userResourceProcessor.process(new Resource<User>(user));
     }
    
+   
+   
    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_read')")
    @RequestMapping(method = RequestMethod.GET, params = "name")
    public Resource<User> getUserByName(@RequestParam(value = "name", required = false) String name) throws UserNotFoundException{
@@ -108,6 +114,8 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
     	return userResourceProcessor.process(new Resource<User>(user));
     }
     
+    
+   
     @PreAuthorize("hasAuthority('admin') or hasAuthority('user_create')")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
@@ -120,7 +128,9 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
         return userResourceProcessor.process(new Resource<User>(user));
     }
     
-    //@PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
+    
+    
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('user_list')")
     @RequestMapping(method = RequestMethod.GET, value= "/search")
     @ResponseStatus(HttpStatus.OK)
     public Resource<SearchResult<User>> searchUser(@RequestParam(value = "fullname", required = false) String fullName,
@@ -140,7 +150,6 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
 	    }
     	
 	    ResourceWithEmbeddable<SearchResult<User>> userSearchResultResource = embeddedRes(userSearchResult, resWrapper(userResources, "users"));
-    	
     	return userSearchResourceProcessor.process(userSearchResultResource);
     }
     
@@ -156,65 +165,4 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
 		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(UserController.class).searchUser(null, null, null, null, null)).withRel("search"));
 		return repositoryLinksResource;
 	}
-   
-    
-    /*@RequestMapping(method = RequestMethod.GET, value= "/report")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity getReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	
-    	 //response.setContentType("application/pdf");
-    	 response.setHeader("Content-Disposition", "inline; filename=file.pdf");
-    	 response.setStatus(HttpServletResponse.SC_OK); 
-    	 
-    	 ByteArrayResource resources = null;
-         
-    	ClassPathResource resource = new ClassPathResource("reports/report1.jrxml");
-    	InputStream reportInputStream = null;
-		try {
-			 //servletOutputStream = response.getOutputStream();
-	         reportInputStream = resource.getInputStream();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    	
-    	
-    	JasperPrint jasperPrint;
-		JasperReport jasperReport;
-		try {
-			jasperReport = JasperCompileManager.compileReport(reportInputStream);
-			CustomJRDataSource<User> dataSource = new CustomJRDataSource<User>()
-				.initBy(this.service.findAll().iterator());
-			jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap(), dataSource);
-		
-			
-			
-		    byte[] bytes = JasperExportManager.exportReportToPdf(jasperPrint);
-		    //JasperExportManager.
-			
-			
-		    resources = new ByteArrayResource(bytes);
-	        
-		
-			
-		} catch (JRException e) {
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			}
-		finally {
-	
-		}
-		
-        
-		
-		
-    	
-		return ResponseEntity.ok()
-                .contentLength(resources.contentLength())
-                
-                .header("Content-Disposition", "inline; filename=file.pdf")
-                .contentType(MediaType.parseMediaType("application/pdf"))
-                .body(resources);
-    }*/
- }
+}
