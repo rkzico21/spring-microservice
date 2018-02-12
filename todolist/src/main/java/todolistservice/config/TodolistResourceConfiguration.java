@@ -31,12 +31,8 @@ public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapt
 		  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		  .antMatchers("/**")
           .authenticated();  //remove comment to enable security
-            //.permitAll();
-	            
-            // .antMatchers(HttpMethod.GET, "/user").hasAuthority("USER_READ");;
-        
-	
-	}
+          //.permitAll();
+	 }
 	
 	
 	 @Bean

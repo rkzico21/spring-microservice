@@ -139,8 +139,8 @@ app.controller('meetingCtrl', ['$scope', '$http', '$sce', '$window', '$location'
         if ($scope.selectedUser && $scope.selectedUser.name) {
             $scope.participants.push({
                 name: $scope.selectedUser.fullName,
-                //organization: $scope.participantOrganization,
-
+				organization: $scope.selectedUser.department,
+                position: $scope.selectedUser.designation,   
                 email: $scope.selectedUser.email,
                 participantId: $scope.selectedUser.id
             });

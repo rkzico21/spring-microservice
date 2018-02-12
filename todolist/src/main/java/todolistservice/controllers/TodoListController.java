@@ -8,7 +8,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import todolistservice.TodoListResourceProcessor;
+import todolistservice.resourceprocessors.TodoListResourceProcessor;
 import todolistservice.User;
 import todolistservice.UserServiceClient;
 import todolistservice.entities.*;
@@ -70,7 +70,8 @@ public class TodoListController  implements ResourceProcessor<RepositoryLinksRes
     		resources.add(resourceProcessor.process(resource));
         }
     	
-    	
+    	Resources<Resource<TodoListItem>> todolistItemResources = new Resources<>(resources);
+    	todolistItemResources.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(TodoListController.class).index(userId)).withSelfRel());
     	return new Resources<>(resources);
     }
 	
@@ -145,10 +146,8 @@ public class TodoListController  implements ResourceProcessor<RepositoryLinksRes
 		try {
 			arg0.add(ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(TodoListController.class).index(null)).withRel("todolist"));
 		} catch (Throwable e) {
-			// TODO Auto-generated catch block
 			logger.error(e.getMessage());
 		}
-		
 		
 		return arg0;
 	}

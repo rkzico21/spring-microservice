@@ -9,6 +9,7 @@ eureka:
       enabled: true
   instance:
     appname: userservice
+    
 hystrix:
   threadpool.default.coreSize: "20"
   threadpool.default.maxQueueSize: "500000"

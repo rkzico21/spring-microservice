@@ -1,4 +1,4 @@
-package todolistservice;
+package todolistservice.resourceprocessors;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;

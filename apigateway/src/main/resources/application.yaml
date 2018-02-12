@@ -55,8 +55,8 @@ meeting:
   
 
 ribbon: 
-  ConnectTimeout: 30000
-  ReadTimeout: 990000
+  ConnectTimeout: 50000
+  ReadTimeout: 999000
   maxAutoRetries: 1
   MaxAutoRetriesNextServer: 2
   eureka:

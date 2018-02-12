@@ -154,9 +154,7 @@ public class UserController  implements ResourceProcessor<RepositoryLinksResourc
     }
     
     
-   
-
-	@Override
+    @Override
 	public RepositoryLinksResource process(RepositoryLinksResource repositoryLinksResource) {
 		
 		repositoryLinksResource.add(ControllerLinkBuilder.linkTo(UserController.class).withRel("users"));

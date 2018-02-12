@@ -9,8 +9,8 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
         $scope.showList = false;
 		
 		$scope.meetings = [];
-        var url = "http://localhost:8888/api/meeting";
-        var trustedurl = $sce.trustAsResourceUrl(url);
+        //var url = "http://localhost:8888/api/meeting";
+        //var trustedurl = $sce.trustAsResourceUrl(url);
 		
 		$http.get("http://localhost:8888/api").then(function(response){
 			$http.get(response.data._links.meeting_service.href).then(function(response){
@@ -52,6 +52,7 @@ app.controller('meetingsCtrl', ['$scope', '$http', '$sce', '$window', '$location
         $http.post(url, dataObj)
             .then(function(response) {
                 var meeting = response.data;
+				console.log(meeting);
                 $scope.meetings.push({
                     url: meeting._links.self.href,
                     subject: meeting.subject,
