@@ -19,8 +19,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-
 @Component
 @Slf4j
 //@ConfigurationProperties("integration.stores")
