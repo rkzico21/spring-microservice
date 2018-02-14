@@ -36,7 +36,6 @@ public class TodolistIntegration {
 	@Setter
 	private String uri = "http://localhost:8081/todolist";
 
-	@HystrixCommand(fallbackMethod = "defaultLink")
 	public Link getTodolistsByUserLink(Map<String, Object> parameters, String host, String prefix) {
 
 		
