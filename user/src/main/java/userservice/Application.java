@@ -128,6 +128,7 @@ public class Application {
     		
     		user = new UserEntity(3L, "user1", "user1", "user@example.com", passwordEncoder.encode("user1"));
     		user.getRoles().add(roleUserList);
+    		user.getRoles().add(roleUserRead);
     		user.getRoles().add(roleUserCreate);
     		user.getRoles().add(roleUserUpdate);
     		user.getRoles().add(roleTodoListRead);
