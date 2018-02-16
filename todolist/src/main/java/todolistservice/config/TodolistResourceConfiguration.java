@@ -1,7 +1,5 @@
 package todolistservice.config;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +28,8 @@ public class TodolistResourceConfiguration extends ResourceServerConfigurerAdapt
 		  .antMatchers("/").permitAll()
 		  .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		  .antMatchers("/**")
-          //.authenticated();  //remove comment to enable security
-          .permitAll();
+          .authenticated();  //remove comment to enable security
+          //.permitAll();
 	 }
 	
 	
