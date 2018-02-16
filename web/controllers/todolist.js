@@ -1,9 +1,16 @@
 app.controller('todoCtrl', function($scope, $http, $sce, $window, $cookies, $route, $location) {
     var userId = 0;
+
 	$scope.init = function() {
+		$scope.pageData;
+		$scope.currentPage = 1;
+        $scope.itemsPerPage = 10;
+        $scope.maxSize = 5;
 		$scope.todoList = [];
         $scope.showForm = false;
         $scope.showList = false;
+		$scope.totalItems = 0;
+		
 		var params = $location.search();
 		
 		var url = false;
@@ -16,25 +23,7 @@ app.controller('todoCtrl', function($scope, $http, $sce, $window, $cookies, $rou
 			userId = $window.localStorage["userId"] || false;
 		}
 		
-		if (url) {
-            var trustedurl = $sce.trustAsResourceUrl(url);
-
-            $http.get(url)
-                .then(function(response) {
-                    $scope.showList = true;
-                    if (response.data._embedded) {
-                        angular.forEach(response.data._embedded.todoListItems, function(item) {
-                            $scope.todoList.push({
-                                todoText: item.title,
-                                done: false,
-                                url: item._links.self.href
-                            });
-
-                        });
-                    }
-                });
-        }
-	
+		loadTodoList(url,$scope.currentPage,$scope.itemsPerPage);
 	};
 
     $scope.todoAdd = function() {
@@ -72,14 +61,46 @@ app.controller('todoCtrl', function($scope, $http, $sce, $window, $cookies, $rou
         $scope.showForm = display;
         $scope.showList = !display;
     };
-
-    /*$scope.remove = function() {
-        var oldList = $scope.todoList;
-        $scope.todoList = [];
-        angular.forEach(oldList, function(x) {
-            if (!x.done) $scope.todoList.push(x);
-        });
+	
+	$scope.changePage = function() {
+		var pageUrl;    
+		if($scope.currentPage === ($scope.pageData.page + 2)) {
+			pageUrl = $scope.pageData._links.next.href;
+		}
 		
-	  
-    };*/
-});
+		if($scope.currentPage === $scope.pageData.page){
+			pageUrl = $scope.pageData._links.prev.href;
+		}
+		
+		loadTodoList(pageUrl, $scope.currentPage - 1, $scope.itemsPerPage);
+	};
+	
+	
+	
+	loadTodoList = function(url, page, size) {
+		if(url) {
+			var	params = {
+					page: page - 1,
+					size: size
+			};
+			
+			
+			$http.get(url, {params: params})
+			    .then(function(response) {
+                    $scope.showList = true;
+                    $scope.totalItems = response.data.totalResults;
+					$scope.pageData = response.data;
+					if (response.data._embedded) {
+						$scope.todoList = [];
+						angular.forEach(response.data._embedded.items, function(item) {
+                            $scope.todoList.push({
+                                todoText: item.title,
+                                done: false,
+                                url: item._links.self.href
+                            });
+						});
+					}
+                });
+		}
+	};
+}); 

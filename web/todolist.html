@@ -21,6 +21,16 @@
 		<span><a href="#" ng-click="deletelist(x.url)">Delete</a></span>
 	</div>
 </div>
+
+<ul  uib-pagination 
+	
+     ng-model="currentPage"
+     total-items="totalItems"
+     max-size = "maxSize"
+     items-per-page="itemsPerPage"
+	 ng-change="changePage()">
+</ul>
+
 </div>
 <br/>
 <br/>

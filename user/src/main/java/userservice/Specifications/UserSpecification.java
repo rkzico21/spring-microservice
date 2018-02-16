@@ -30,7 +30,6 @@ public class UserSpecification implements Specification<UserEntity> {
         else if (criteria.getOperation().equalsIgnoreCase(":")) {
             if (root.get(criteria.getKey()).getJavaType() == String.class) {
                 
-            	System.out.println(criteria.getValue());
             	return builder.like(
                   root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
             } else {

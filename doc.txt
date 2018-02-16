@@ -12,7 +12,7 @@ Dependencies
 	  http://www.baeldung.com/install-maven-on-windows-linux-mac
   
   
-    Once mvn is configured then run following command from root directory of all the packages(i.e registry, apigateway, todolist, user) which will download necessary dependencies.
+    Once mvn is configured then run following command from root directory of all the packages(i.e registry, apigateway,authservice ,todolist, user, meeting) which will download necessary dependencies.
 	
 	mvn clean install.
 	
@@ -48,7 +48,7 @@ Dependencies
    
   
 	
-4. Memcached:
+4. Memcached (This is not required now):
     "todolist" service is dependent on memcached. So make sure memcached is running before starting todolistservice.
  
     Unix installer : http://www.memcached.org/downloads
